@@ -1,0 +1,16 @@
+create("age", 20);
+when(compare(get("age"), ">=", 18)) {
+    print("You are an adult");
+}
+when(compare(get("age"), "<", 18)) {
+    print("You are a minor");
+}
+when(true) { print("literal true"); }
+when(false) { print("never"); }
+when(1) { print("non-zero is true"); }
+when(0) { print("zero is false"); }
+when(compare(1, "<", 2)) {
+    when(compare(2, "<", 3)) { print("nested"); }
+}
+when(true) { create("inside", 5); }
+print(get("inside"));

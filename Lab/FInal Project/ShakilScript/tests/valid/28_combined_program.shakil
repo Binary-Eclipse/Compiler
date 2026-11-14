@@ -1,0 +1,35 @@
+// Functions, loops, conditions and collections working together
+function isEven(n) {
+    return(compare(modulo(n, 2), "==", 0));
+}
+
+function sumList(items) {
+    create("sum", 0);
+    create("i", 0);
+    repeat(count(items)) {
+        update("sum", add(get("sum"), at(items, get("i"))));
+        update("i", add(get("i"), 1));
+    }
+    return(get("sum"));
+}
+
+create("nums", []);
+create("k", 1);
+repeat(10) {
+    when(call("isEven", get("k"))) { append(get("nums"), get("k")); }
+    update("k", add(get("k"), 1));
+}
+print(get("nums"));
+print(call("sumList", get("nums")));
+reverse(get("nums"));
+print(get("nums"));
+print(convert(call("sumList", get("nums")), "string"));
+
+create("age", convert("19", "integer"));
+when(compare(get("age"), ">=", 18)) { print("adult"); }
+
+create("found", find(get("nums"), 6));
+when(compare(get("found"), ">=", 0)) {
+    print("6 is at index");
+    print(get("found"));
+}

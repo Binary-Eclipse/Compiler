@@ -1,0 +1,4 @@
+repeat(3) {
+    print("tick");
+}
+print(get("missing"));

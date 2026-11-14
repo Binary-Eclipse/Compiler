@@ -1,0 +1,15 @@
+repeat(5) {
+    skip();
+    print("Hello");
+}
+print("after");
+create("i", 0);
+repeat(5) {
+    update("i", add(get("i"), 1));
+    when(compare(modulo(get("i"), 2), "==", 0)) { skip(); }
+    print(get("i"));
+}
+repeat(2) {
+    repeat(2) { skip(); print("never"); }
+    print("outer");
+}

@@ -1,0 +1,17 @@
+create("first", 20);
+create("second", 10);
+
+print("Addition:");
+print(add(get("first"), get("second")));
+
+print("Subtraction:");
+print(subtract(get("first"), get("second")));
+
+print("Multiplication:");
+print(multiply(get("first"), get("second")));
+
+print("Division:");
+print(divide(get("first"), get("second")));
+
+print("Remainder:");
+print(modulo(get("first"), get("second")));

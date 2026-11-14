@@ -1,0 +1,6 @@
+// The manual: input() returns text, no automatic numeric conversion.
+create("n", input(""));
+print(get("n"));
+print(compare(get("n"), "==", "25"));
+print(compare(get("n"), "==", 25));
+print(add(convert(get("n"), "integer"), 5));

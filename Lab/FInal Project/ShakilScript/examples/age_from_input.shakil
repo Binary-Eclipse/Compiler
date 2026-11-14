@@ -1,0 +1,8 @@
+// input() returns text, so convert it before doing arithmetic.
+create("text", input("How old are you? "));
+create("age", convert(get("text"), "integer"));
+
+when(compare(get("age"), ">=", 18)) {
+    print("You are an adult");
+}
+print(add(get("age"), 1));

@@ -1,0 +1,4 @@
+function f() {
+    stop();
+}
+repeat(3) { call("f"); }

@@ -1,0 +1,2 @@
+print("x");
+function f(a, a) { return(a); }

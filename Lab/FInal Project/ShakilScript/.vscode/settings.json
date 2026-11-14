@@ -1,0 +1,12 @@
+{
+  // Highlight ShakilScript files with VS Code's built-in JavaScript colouring,
+  // but switch off JavaScript error checking (ShakilScript is not JavaScript).
+  "files.associations": {
+    "*.shakil": "javascript",
+    "*.ss": "javascript"
+  },
+  "javascript.validate.enable": false,
+  "editor.tabSize": 4,
+  // F5 uses a terminal; Command Prompt makes the run scripts behave the same on every PC.
+  "terminal.integrated.defaultProfile.windows": "Command Prompt"
+}

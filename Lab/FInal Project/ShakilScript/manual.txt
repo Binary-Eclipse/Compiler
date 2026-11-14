@@ -1,0 +1,1060 @@
+# ShakilScript — Complete Beginner Programming Manual
+
+**Version:** 1.2 — English Function Names  
+**Project:** Compiler Design Lab  
+**Language implementation:** C, Flex and Bison
+
+---
+
+# 1. Introduction to ShakilScript
+
+ShakilScript is a simple programming language created as a Compiler Design Lab project.
+
+Its purpose is to help beginners understand programming concepts through easy-to-read English function names.
+
+For example, in Python, we write:
+
+```python
+print("Hello World")
+```
+
+In ShakilScript, we write:
+
+```javascript
+print("Hello World");
+```
+
+The syntax is designed to be familiar to beginners.
+
+## What can you learn with ShakilScript?
+
+1. Displaying output
+2. Taking user input
+3. Creating variables
+4. Updating variables
+5. Retrieving variable values
+6. Performing mathematical operations
+7. Comparing values
+8. Making decisions
+9. Repeating instructions
+10. Controlling loops
+11. Creating and calling functions
+12. Working with collections
+13. Searching and sorting data
+14. Converting data types
+
+**Important:** This manual describes the intended syntax of all 25 functions. Some of the newer functions still need successful grammar integration and testing before they can be considered fully executable.
+
+---
+
+# 2. Setting Up ShakilScript
+
+## Requirements
+
+Install the following tools:
+
+- GCC compiler
+- Flex
+- Bison
+- Make
+- MSYS2 UCRT64 terminal on Windows
+
+## Project folder structure
+
+```text
+ShakilScript_English/
+│
+├── main.c
+├── Makefile
+├── README.md
+│
+├── src/
+│   ├── lexer.l
+│   ├── parser.y
+│   ├── runtime.c
+│   └── runtime.h
+│
+└── examples/
+    ├── first_program.ss
+    ├── input_example.ss
+    └── functions_11_25.ss
+```
+
+## Build the project
+
+Open the project folder in the MSYS2 UCRT64 terminal.
+
+Run:
+
+```bash
+make clean
+make
+```
+
+If the build succeeds, the executable will be created:
+
+```text
+shakilscript.exe
+```
+
+## Run a program
+
+```bash
+./shakilscript.exe examples/first_program.ss
+```
+
+In Windows PowerShell, use:
+
+```powershell
+.\shakilscript.exe examples\first_program.ss
+```
+
+---
+
+# 3. Your First ShakilScript Program
+
+Create a file named:
+
+```text
+hello.ss
+```
+
+Write:
+
+```javascript
+print("Hello World!");
+print("Welcome to ShakilScript!");
+```
+
+Run:
+
+```bash
+./shakilscript.exe hello.ss
+```
+
+Expected output:
+
+```text
+Hello World!
+Welcome to ShakilScript!
+```
+
+## Understanding the code
+
+- `print()` displays information.
+- Text must be written inside quotation marks.
+- A semicolon `;` indicates the end of a statement.
+- Each instruction is written on a separate line for readability.
+
+---
+
+# 4. Basic Syntax Rules
+
+Before writing programs, learn these rules.
+
+## Rule 1: Use semicolons
+
+Correct:
+
+```javascript
+print("Hello");
+print("Welcome");
+```
+
+Incorrect:
+
+```javascript
+print("Hello")
+print("Welcome")
+```
+
+## Rule 2: Use quotation marks for text
+
+```javascript
+print("ShakilScript");
+```
+
+## Rule 3: Use parentheses with functions
+
+```javascript
+print("Hello");
+```
+
+## Rule 4: Use curly brackets for code blocks
+
+The intended syntax for conditions and loops uses `{ }`.
+
+```javascript
+when(compare(10, ">", 5)) {
+    print("Ten is greater");
+}
+```
+
+## Rule 5: Use comments
+
+A comment explains code. It is not executed.
+
+```javascript
+// This is a comment
+print("Hello World");
+```
+
+---
+
+# 5. Understanding Data Types
+
+A data type describes what kind of value is being stored.
+
+ShakilScript is intended to support these basic types.
+
+## Integer
+
+An integer is a whole number.
+
+```javascript
+create("age", 24);
+create("marks", 90);
+```
+
+## Float
+
+A float is a decimal number.
+
+```javascript
+create("price", 99.50);
+create("cgpa", 3.85);
+```
+
+## String
+
+A string contains text.
+
+```javascript
+create("name", "Shakil");
+create("country", "Bangladesh");
+```
+
+## Boolean
+
+A Boolean represents either true or false.
+
+```javascript
+create("is_student", true);
+create("is_finished", false);
+```
+
+---
+
+# 6. Variables
+
+A variable is a named place where a program stores information.
+
+## Function 1: create()
+
+Purpose: Create a new variable.
+
+Syntax:
+
+```javascript
+create("variable_name", value);
+```
+
+Example:
+
+```javascript
+create("name", "Shakil");
+create("age", 24);
+create("cgpa", 3.90);
+```
+
+## Function 2: update()
+
+Purpose: Change the value of an existing variable.
+
+Syntax:
+
+```javascript
+update("variable_name", new_value);
+```
+
+Example:
+
+```javascript
+create("age", 20);
+
+update("age", 24);
+
+print(get("age"));
+```
+
+Expected output:
+
+```text
+24
+```
+
+## Function 3: get()
+
+Purpose: Retrieve the value of a variable.
+
+Syntax:
+
+```javascript
+get("variable_name");
+```
+
+Example:
+
+```javascript
+create("name", "Shakil");
+
+print(get("name"));
+```
+
+Expected output:
+
+```text
+Shakil
+```
+
+---
+
+# 7. Taking User Input
+
+## Function 4: input()
+
+Purpose: Receive information from the user.
+
+Syntax:
+
+```javascript
+input("message");
+```
+
+Example:
+
+```javascript
+create("name", input("Enter your name: "));
+
+print("Welcome!");
+print(get("name"));
+```
+
+When the program runs, it asks the user to enter a name.
+
+Example interaction:
+
+```text
+Enter your name: Shakil
+Welcome!
+Shakil
+```
+
+**Note:** The current starter implementation returns input as text. It does not automatically convert numeric input into an integer or float.
+
+---
+
+# 8. Mathematical Operations
+
+ShakilScript provides mathematical functions.
+
+## Function 5: add()
+
+Adds two values.
+
+```javascript
+print(add(10, 20));
+```
+
+Output:
+
+```text
+30
+```
+
+## Function 6: subtract()
+
+Subtracts the second value from the first.
+
+```javascript
+print(subtract(20, 5));
+```
+
+Output:
+
+```text
+15
+```
+
+## Function 7: multiply()
+
+Multiplies two values.
+
+```javascript
+print(multiply(5, 4));
+```
+
+Output:
+
+```text
+20
+```
+
+## Function 8: divide()
+
+Divides the first value by the second.
+
+```javascript
+print(divide(20, 5));
+```
+
+Output:
+
+```text
+4
+```
+
+Division by zero should produce a runtime error rather than a valid result.
+
+## Function 9: modulo()
+
+Returns the remainder after division.
+
+```javascript
+print(modulo(10, 3));
+```
+
+Output:
+
+```text
+1
+```
+
+## Mathematical operators
+
+The language also supports ordinary arithmetic operators in expressions.
+
+| Operator | Meaning | Example |
+|---|---|---|
+| `+` | Addition | `10 + 5` |
+| `-` | Subtraction | `10 - 5` |
+| `*` | Multiplication | `10 * 5` |
+| `/` | Division | `10 / 5` |
+
+Example:
+
+```javascript
+create("result", 10 + 20 * 2);
+
+print(get("result"));
+```
+
+Expected output:
+
+```text
+50
+```
+
+Multiplication is performed before addition.
+
+---
+
+# 9. Comparison and Decision Making
+
+Programs often need to make decisions.
+
+For example:
+
+- Is the student older than 18?
+- Did the student pass?
+- Is the balance greater than zero?
+
+## Function 10: compare()
+
+Purpose: Compare two values.
+
+Intended syntax:
+
+```javascript
+compare(first_value, "operator", second_value)
+```
+
+Comparison operators:
+
+| Operator | Meaning |
+|---|---|
+| `==` | Equal |
+| `!=` | Not equal |
+| `>` | Greater than |
+| `<` | Less than |
+| `>=` | Greater than or equal |
+| `<=` | Less than or equal |
+
+Example:
+
+```javascript
+print(compare(10, ">", 5));
+```
+
+Expected result:
+
+```text
+true
+```
+
+## Function 11: when()
+
+Purpose: Execute a block when a condition is true.
+
+Intended syntax:
+
+```javascript
+when(condition) {
+    statements;
+}
+```
+
+Example:
+
+```javascript
+create("age", 20);
+
+when(compare(get("age"), ">=", 18)) {
+    print("You are an adult");
+}
+```
+
+Expected output:
+
+```text
+You are an adult
+```
+
+---
+
+# 10. Loops
+
+A loop repeats instructions.
+
+For example, instead of writing the same instruction five times, we can use a loop.
+
+## Function 12: repeat()
+
+Purpose: Repeat a block a specified number of times.
+
+Intended syntax:
+
+```javascript
+repeat(5) {
+    print("Hello");
+}
+```
+
+Expected output:
+
+```text
+Hello
+Hello
+Hello
+Hello
+Hello
+```
+
+## Function 13: stop()
+
+Purpose: Stop the current loop.
+
+Example:
+
+```javascript
+repeat(10) {
+    print("Hello");
+    stop();
+}
+```
+
+The loop stops after its first execution.
+
+## Function 14: skip()
+
+Purpose: Skip the remaining instructions in the current loop iteration and continue with the next iteration.
+
+Example:
+
+```javascript
+repeat(5) {
+    skip();
+    print("Hello");
+}
+```
+
+In this example, `print()` is skipped in every iteration.
+
+**Important:** `stop()` and `skip()` must be used inside a loop.
+
+---
+
+# 11. User-Defined Functions
+
+A user-defined function is a reusable block of code created by the programmer.
+
+For example, if you want to perform the same task several times, you can create a function once and call it whenever necessary.
+
+## Function 15: return()
+
+Purpose: Return a value from a function.
+
+## Function 16: call()
+
+Purpose: Call an existing user-defined function.
+
+Intended function definition syntax:
+
+```javascript
+function addNumbers(a, b) {
+    return(add(a, b));
+}
+```
+
+Calling the function:
+
+```javascript
+print(call("addNumbers", 10, 20));
+```
+
+Expected output:
+
+```text
+30
+```
+
+### Another example
+
+```javascript
+function square(number) {
+    return(multiply(number, number));
+}
+
+print(call("square", 5));
+print(call("square", 10));
+```
+
+Expected output:
+
+```text
+25
+100
+```
+
+A function can be reused with different arguments.
+
+---
+
+# 12. Collections
+
+A collection stores multiple values together.
+
+For example, instead of creating separate variables for five student marks, we can store them in one list.
+
+Intended collection syntax:
+
+```javascript
+create("marks", [80, 90, 75, 85, 95]);
+```
+
+The exact list-literal and collection grammar must be supported by the parser before these examples can run.
+
+## Function 17: sort()
+
+Purpose: Arrange collection values in sorted order.
+
+```javascript
+create("numbers", [5, 2, 8, 1, 3]);
+
+sort(get("numbers"));
+```
+
+Expected sorted values:
+
+```text
+[1, 2, 3, 5, 8]
+```
+
+## Function 18: find()
+
+Purpose: Search for a value in a collection.
+
+```javascript
+find(get("numbers"), 8);
+```
+
+The intended result is the position of the matching value, or a not-found result if the value does not exist.
+
+## Function 19: at()
+
+Purpose: Access an element using its index.
+
+```javascript
+at(get("numbers"), 0);
+```
+
+The first element is at index `0`.
+
+Example:
+
+```text
+Index:   0  1  2  3  4
+Values:  1  2  3  5  8
+```
+
+## Function 20: append()
+
+Purpose: Add a new value to a collection.
+
+```javascript
+append(get("numbers"), 10);
+```
+
+The intended result is:
+
+```text
+[1, 2, 3, 5, 8, 10]
+```
+
+## Function 21: remove()
+
+Purpose: Remove an element from a collection.
+
+```javascript
+remove(get("numbers"), 2);
+```
+
+The precise meaning of the second argument—index or value—must be fixed in the implementation. This manual uses the intended index-based convention.
+
+## Function 22: count()
+
+Purpose: Count the number of elements in a collection.
+
+```javascript
+count(get("numbers"));
+```
+
+Example result:
+
+```text
+5
+```
+
+## Function 23: reverse()
+
+Purpose: Reverse the order of collection elements.
+
+```javascript
+reverse(get("numbers"));
+```
+
+Example:
+
+```text
+[1, 2, 3, 5, 8]
+```
+
+Becomes:
+
+```text
+[8, 5, 3, 2, 1]
+```
+
+---
+
+# 13. Type Conversion
+
+## Function 24: convert()
+
+Purpose: Convert a value from one data type to another.
+
+Intended syntax:
+
+```javascript
+convert(value, "target_type");
+```
+
+Example:
+
+```javascript
+convert("25", "integer");
+convert("3.50", "float");
+convert(100, "string");
+```
+
+Supported target types should include:
+
+- `"integer"`
+- `"float"`
+- `"string"`
+- `"boolean"`
+
+Invalid conversions should produce an error.
+
+---
+
+# 14. Complete Example Programs
+
+The following examples combine multiple programming concepts. They show the intended ShakilScript syntax; examples using newer features require the corresponding parser and runtime implementation.
+
+## Example 1: Student Information
+
+```javascript
+// Student information program
+
+create("name", "Shakil");
+create("age", 24);
+create("department", "CSE");
+create("cgpa", 3.90);
+
+print("Student Information");
+
+print(get("name"));
+print(get("age"));
+print(get("department"));
+print(get("cgpa"));
+```
+
+## Example 2: Simple Calculator
+
+```javascript
+create("first", 20);
+create("second", 10);
+
+print("Addition:");
+print(add(get("first"), get("second")));
+
+print("Subtraction:");
+print(subtract(get("first"), get("second")));
+
+print("Multiplication:");
+print(multiply(get("first"), get("second")));
+
+print("Division:");
+print(divide(get("first"), get("second")));
+
+print("Remainder:");
+print(modulo(get("first"), get("second")));
+```
+
+## Example 3: Age Checking
+
+```javascript
+create("age", 20);
+
+when(compare(get("age"), ">=", 18)) {
+    print("Eligible");
+}
+```
+
+## Example 4: Repeating a Message
+
+```javascript
+repeat(5) {
+    print("Welcome to ShakilScript");
+}
+```
+
+## Example 5: User-Defined Function
+
+```javascript
+function greet(name) {
+    print("Hello!");
+    print(name);
+}
+
+call("greet", "Shakil");
+```
+
+## Example 6: Collection Operations
+
+```javascript
+create("numbers", [5, 3, 1, 4, 2]);
+
+sort(get("numbers"));
+
+print(get("numbers"));
+
+print(count(get("numbers")));
+
+print(at(get("numbers"), 0));
+```
+
+---
+
+# 15. All 25 ShakilScript Functions
+
+| No. | Function | Purpose |
+|---:|---|---|
+| 1 | `print()` | Display output |
+| 2 | `input()` | Receive user input |
+| 3 | `create()` | Create a variable |
+| 4 | `update()` | Update a variable |
+| 5 | `get()` | Retrieve a variable |
+| 6 | `add()` | Add values |
+| 7 | `subtract()` | Subtract values |
+| 8 | `multiply()` | Multiply values |
+| 9 | `divide()` | Divide values |
+| 10 | `modulo()` | Find the remainder |
+| 11 | `compare()` | Compare values |
+| 12 | `when()` | Execute a conditional block |
+| 13 | `repeat()` | Repeat a block |
+| 14 | `stop()` | Stop a loop |
+| 15 | `skip()` | Skip a loop iteration |
+| 16 | `return()` | Return a value |
+| 17 | `call()` | Call a user-defined function |
+| 18 | `sort()` | Sort a collection |
+| 19 | `find()` | Search a collection |
+| 20 | `at()` | Access an element |
+| 21 | `append()` | Add an element |
+| 22 | `remove()` | Remove an element |
+| 23 | `count()` | Count elements |
+| 24 | `reverse()` | Reverse a collection |
+| 25 | `convert()` | Convert a data type |
+
+---
+
+# 16. Common Errors and Solutions
+
+## Error 1: Missing semicolon
+
+Incorrect:
+
+```javascript
+print("Hello")
+```
+
+Correct:
+
+```javascript
+print("Hello");
+```
+
+## Error 2: Missing quotation marks
+
+Incorrect:
+
+```javascript
+create("name", Shakil);
+```
+
+Correct:
+
+```javascript
+create("name", "Shakil");
+```
+
+## Error 3: Using an undeclared variable
+
+Incorrect:
+
+```javascript
+print(get("age"));
+```
+
+If `age` was never created, the runtime should report an undefined variable.
+
+Correct:
+
+```javascript
+create("age", 24);
+print(get("age"));
+```
+
+## Error 4: Division by zero
+
+Incorrect:
+
+```javascript
+print(divide(10, 0));
+```
+
+Always check the divisor before division.
+
+## Error 5: Running the executable incorrectly in PowerShell
+
+Incorrect:
+
+```powershell
+/shakilscript.exe examples/first_program.ss
+```
+
+Correct:
+
+```powershell
+.\shakilscript.exe examples\first_program.ss
+```
+
+## Error 6: Build errors
+
+If `make` reports an error in `parser.y`, the grammar or C code generated by Bison may need correction.
+
+Run:
+
+```bash
+make clean
+make
+```
+
+Do not try to run the program until the build completes successfully.
+
+---
+
+# 17. Practice Exercises for Beginners
+
+Try these exercises after learning the syntax.
+
+### Beginner Level
+
+1. Display your name.
+2. Display your university name.
+3. Create three variables: name, age, and department.
+4. Update your age.
+5. Add two numbers.
+6. Subtract two numbers.
+7. Multiply two numbers.
+8. Divide two numbers.
+9. Take a name as input and display it.
+
+### Intermediate Level
+
+10. Compare two numbers.
+11. Check whether someone is 18 or older.
+12. Repeat a message five times.
+13. Stop a loop after one iteration.
+14. Create a function that adds two numbers.
+15. Create a function that calculates the square of a number.
+
+### Advanced Level
+
+16. Sort a collection of numbers.
+17. Search for a number in a collection.
+18. Find the number of elements in a collection.
+19. Reverse a collection.
+20. Convert a string into an integer.
+
+---
+
+# 18. Final Advice
+
+Learn ShakilScript in this order:
+
+1. Understand the basic syntax.
+2. Learn `print()` and `input()`.
+3. Learn variables using `create()`, `update()`, and `get()`.
+4. Practice mathematical operations.
+5. Learn comparisons and conditions.
+6. Practice loops.
+7. Learn user-defined functions.
+8. Learn collections.
+9. Practice type conversion.
+10. Build small projects.
+
+**Remember:** The goal is not only to memorize 25 functions. The goal is to understand how programming works and how to combine instructions to solve problems.
+
+Start with small programs, test each one, understand the output, and gradually build larger programs using ShakilScript.

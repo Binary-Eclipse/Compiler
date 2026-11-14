@@ -1,0 +1,54 @@
+function addNumbers(a, b) {
+    return(add(a, b));
+}
+print(call("addNumbers", 10, 20));
+
+function square(number) {
+    return(multiply(number, number));
+}
+print(call("square", 5));
+print(call("square", 10));
+
+function greet(name) {
+    print("Hello!");
+    print(name);
+}
+call("greet", "Shakil");
+
+function hello() { print("hi from hello"); }
+call("hello");
+
+function fact(n) {
+    when(compare(n, "<=", 1)) { return(1); }
+    return(multiply(n, call("fact", subtract(n, 1))));
+}
+print(call("fact", 5));
+print(call("fact", 10));
+
+function fib(n) {
+    when(compare(n, "<", 2)) { return(n); }
+    return(add(call("fib", subtract(n, 1)), call("fib", subtract(n, 2))));
+}
+print(call("fib", 15));
+
+function firstEven() {
+    create("k", 0);
+    repeat(100) {
+        update("k", add(get("k"), 1));
+        when(compare(modulo(get("k"), 2), "==", 0)) { return(get("k")); }
+    }
+    return(-1);
+}
+print(call("firstEven"));
+
+function outer() { return(call("inner")); }
+function inner() { return("inner ran"); }
+print(call("outer"));
+
+function early() {
+    return("early");
+    print("never printed");
+}
+print(call("early"));
+call("addNumbers", 1, 2);
+print(call("square", call("square", 3)));

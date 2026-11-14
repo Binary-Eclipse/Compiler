@@ -1,0 +1,7 @@
+build/
+shakilscript
+shakilscript.exe
+parser.tab.c
+parser.tab.h
+lex.yy.c
+*.o

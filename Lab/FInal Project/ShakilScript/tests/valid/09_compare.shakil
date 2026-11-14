@@ -1,0 +1,17 @@
+print(compare(10, ">", 5));
+print(compare(10, "<", 5));
+print(compare(10, "==", 10));
+print(compare(10, "!=", 10));
+print(compare(10, ">=", 10));
+print(compare(9, "<=", 10));
+print(compare(9, ">=", 10));
+print(compare(10, "==", 10.0));
+print(compare(2.5, "<", 3));
+print(compare("apple", "<", "banana"));
+print(compare("a", "==", "a"));
+print(compare("a", "!=", "b"));
+print(compare("a", "==", 1));
+print(compare(true, "==", true));
+print(compare(true, "!=", false));
+print(compare([1, 2], "==", [1, 2]));
+print(compare([1, 2], "==", [1, 3]));

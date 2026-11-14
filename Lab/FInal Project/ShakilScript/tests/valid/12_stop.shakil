@@ -1,0 +1,14 @@
+repeat(10) {
+    print("Hello");
+    stop();
+}
+create("n", 0);
+repeat(10) {
+    update("n", add(get("n"), 1));
+    when(compare(get("n"), "==", 3)) { stop(); }
+}
+print(get("n"));
+repeat(2) {
+    repeat(5) { stop(); }
+    print("outer continues");
+}

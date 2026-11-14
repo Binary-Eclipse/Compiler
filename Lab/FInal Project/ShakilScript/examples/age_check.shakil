@@ -1,0 +1,5 @@
+create("age", 20);
+
+when(compare(get("age"), ">=", 18)) {
+    print("Eligible");
+}

@@ -1,0 +1,9 @@
+create("numbers", [5, 3, 1, 4, 2]);
+
+sort(get("numbers"));
+
+print(get("numbers"));
+
+print(count(get("numbers")));
+
+print(at(get("numbers"), 0));

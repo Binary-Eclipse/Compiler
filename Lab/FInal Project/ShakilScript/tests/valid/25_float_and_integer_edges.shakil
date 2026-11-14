@@ -1,0 +1,11 @@
+print(1.0);
+print(add(0.1, 0.2));
+print(divide(10, 3));
+print(1000000.5);
+print(multiply(1000000, 1000000));
+print(add(9223372036854775806, 1));
+print(multiply(3037000499, 3037000499));
+print(subtract(0, 9223372036854775807));
+print(modulo(5, -1));
+print(divide(-9, 3));
+print(0.5 * 4);

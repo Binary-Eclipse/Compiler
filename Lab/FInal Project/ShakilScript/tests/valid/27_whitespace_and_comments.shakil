@@ -1,0 +1,7 @@
+// leading comment
+   print("a");   // trailing comment
+	print("b");
+
+
+print(   "c"   )  ;
+// last line comment without newline

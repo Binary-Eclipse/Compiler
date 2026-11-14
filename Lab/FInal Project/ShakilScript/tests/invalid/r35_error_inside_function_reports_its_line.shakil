@@ -1,0 +1,6 @@
+function f(x) {
+    print("in f");
+    return(divide(x, 0));
+}
+print("start");
+print(call("f", 1));

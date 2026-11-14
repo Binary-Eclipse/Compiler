@@ -1,0 +1,14 @@
+create("name", "Shakil");
+create("age", 24);
+create("cgpa", 3.90);
+create("price", 99.50);
+create("is_student", true);
+create("is_finished", false);
+create("country", "Bangladesh");
+print(get("name"));
+print(get("age"));
+print(get("cgpa"));
+print(get("price"));
+print(get("is_student"));
+print(get("is_finished"));
+print(get("country"));

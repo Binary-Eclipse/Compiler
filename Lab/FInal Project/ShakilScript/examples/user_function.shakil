@@ -1,0 +1,6 @@
+function greet(name) {
+    print("Hello!");
+    print(name);
+}
+
+call("greet", "Shakil");

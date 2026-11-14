@@ -1,0 +1,6 @@
+create("a", input("a? "));
+create("b", input("b? "));
+create("c", input("c? "));
+print(get("a"));
+print(get("b"));
+print(get("c"));

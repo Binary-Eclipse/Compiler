@@ -1,0 +1,12 @@
+* text=auto
+*.sh text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+tests/**/*.shakil text eol=lf
+tests/**/*.out text eol=lf
+tests/**/*.err text eol=lf
+# These test files intentionally contain CRLF / a byte-order mark; never normalise them.
+tests/valid/29_crlf_line_endings.shakil -text
+tests/valid/30_utf8_bom.shakil -text
+tests/valid/04_input_multiple_lines.in -text
+tests/valid/31_input_strips_carriage_return.in -text

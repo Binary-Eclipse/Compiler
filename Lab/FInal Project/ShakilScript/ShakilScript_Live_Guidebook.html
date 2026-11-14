@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ShakilScript — Interactive Guidebook (live editor)</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#182033;--muted:#657089;--accent:#5b55d9;--border:#e2e6ef;--code:#111827;--good:#16794b;--bad:#c0392b}
+[data-theme=dark]{--bg:#101522;--panel:#1a2232;--text:#eef2ff;--muted:#aab4ca;--accent:#aaa4ff;--border:#303b50;--code:#090d16;--good:#6bd6a2;--bad:#ff8c7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,Segoe UI,sans-serif}
+header{background:linear-gradient(120deg,#27246f,#5b55d9);color:#fff;padding:24px max(20px,calc((100% - 1200px)/2))}header h1{margin:0}header p{margin:6px 0 0;color:#e4e3ff}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:7px 12px}.primary{background:var(--accent);color:#fff;border:0;font-weight:650}
+.layout{max-width:1200px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px}
+aside,main{background:var(--panel);border:1px solid var(--border);border-radius:14px}aside{padding:14px;height:max-content;position:sticky;top:12px}main{padding:clamp(16px,3vw,32px)}
+.nav{display:block;width:100%;text-align:left;border:0;background:none;color:var(--muted);padding:8px 10px}.nav.active{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--text);font-weight:650}
+.bar{height:8px;background:var(--border);border-radius:9px;overflow:hidden;margin:8px 0}.bar span{display:block;height:100%;background:var(--accent);width:0}
+.note{padding:11px 14px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--panel));border-radius:8px;margin:14px 0}
+code{font-family:ui-monospace,Consolas,monospace;background:color-mix(in srgb,var(--accent) 10%,transparent);padding:1px 5px;border-radius:5px}
+table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid var(--border);text-align:left}
+.pg{border:1px solid var(--border);border-radius:12px;margin:14px 0;overflow:hidden}.pg .t{background:var(--border);padding:5px 12px;font-size:.8rem;color:var(--muted)}
+textarea,.stdin{width:100%;border:0;font:.92rem/1.5 ui-monospace,Consolas,monospace;background:var(--code);color:#e5e7eb;padding:12px;resize:vertical;display:block}textarea{min-height:110px}
+.stdin{border-top:1px solid #333;background:#0c1220;padding:8px 12px}.ctl{display:flex;gap:8px;align-items:center;padding:8px 12px;flex-wrap:wrap}.chk{font-weight:650}
+pre.out{margin:0;padding:12px;background:#05080f;color:#b8f3c9;min-height:38px;white-space:pre-wrap;font:.9rem ui-monospace,Consolas,monospace}pre.out.err{color:#ffb4a8}
+.q{border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0}.q button{margin:4px 6px 0 0}
+@media(max-width:800px){.layout{grid-template-columns:1fr}aside{position:static}}
+</style></head><body>
+<header><h1>Learn ShakilScript — live editor edition</h1><p>Every example runs right here. Edit the code, press <b>▶ Run</b> (or Ctrl+Enter), and solve the challenges. Works offline.</p>
+<p><button id=theme>🌙 Theme</button> <button id=reset>Reset progress</button></p></header>
+<div class=layout><aside><b>📚 Lessons</b><div class=bar><span id=pb></span></div><div id=pt style="font-size:.8rem;color:var(--muted)"></div><nav id=nav></nav></aside>
+<main><article id=art></article><p style="display:flex;justify-content:space-between"><button id=prev>← Previous</button><button id=next class=primary>Next →</button></p></main></div>
+<script>
+function ShakilRun(src,stdin,out){
+const FN="print input create update get add subtract multiply divide modulo compare when repeat stop skip return call sort find at append remove count reverse convert function".split(" ");
+const E=(k,ln,m)=>{throw new Error(`ShakilScript ${k} error at line ${ln}: ${m}`)};
+const T=[];let ln=1,i=0,m;const re=/\s+|\/\/[^\n]*|(\d+\.\d+)|(\d+)|([A-Za-z_]\w*)|"((?:[^"\\\n]|\\.)*)"|([()\[\]{},;+\-*\/])|(.)/y;
+while(i<src.length){re.lastIndex=i;m=re.exec(src);i=re.lastIndex;const s=m[0];
+ if(m[1])T.push({k:"f",v:parseFloat(s),ln});else if(m[2])T.push({k:"n",v:BigInt(s),ln});else if(m[3])T.push({k:"w",v:s,ln});
+ else if(m[4]!==undefined)T.push({k:"s",v:s.slice(1,-1).replace(/\\(.)/g,(_,c)=>c=="n"?"\n":c=="t"?"\t":c=="r"?"\r":c),ln});
+ else if(m[5])T.push({k:"p",v:s,ln});else if(m[6])E("lexer",ln,s=='"'?"unterminated string (missing closing quotation mark)":`unexpected character '${s}'`);
+ ln+=(s.match(/\n/g)||[]).length}
+T.push({k:"e",ln});let p=0;
+const isP=c=>T[p].k=="p"&&T[p].v==c,isW=c=>T[p].k=="w"&&T[p].v==c;
+const SE=m=>E("syntax",T[p].ln,"syntax error, "+m);
+const ex_=c=>{if(!isP(c))SE(`unexpected ${T[p].k=="e"?"end of file":"'"+(T[p].v)+"'"}, expecting '${c}'`+(c==";"?"  (hint: every statement must end with ';')":""));return T[p++]};
+const args=()=>{const a=[];if(isP(")"))return a;a.push(ex());while(isP(",")){p++;a.push(ex())}return a};
+const ex=()=>{let l=tm();while(isP("+")||isP("-")){const op=T[p++].v;l={t:"b",op,l,r:tm(),ln:T[p-1].ln}}return l};
+const tm=()=>{let l=un();while(isP("*")||isP("/")){const op=T[p++].v;l={t:"b",op,l,r:un(),ln:T[p-1].ln}}return l};
+const un=()=>{if(isP("-")){const ln=T[p++].ln;return{t:"b",op:"-",l:{t:"v",v:0n},r:un(),ln}}return pr()};
+const pr=()=>{const t=T[p];
+ if(t.k=="n"||t.k=="f"||t.k=="s"){p++;return{t:"v",v:t.v}}
+ if(t.k=="p"&&t.v=="["){p++;const a=args2("]");return{t:"l",a}}
+ if(t.k=="p"&&t.v=="("){p++;const e=ex();ex_(")");return e}
+ if(t.k=="w"){p++;if(t.v=="true"||t.v=="false")return{t:"v",v:t.v=="true"};
+  if(!FN.includes(t.v))return{t:"var",n:t.v,ln:t.ln};
+  ex_("(");const a=args();ex_(")");
+  if(t.v=="get"){if(a.length!=1||a[0].t!="v"||typeof a[0].v!="string")SE("get() needs a quoted variable name");return{t:"var",n:a[0].v,ln:t.ln}}
+  return{t:"c",n:t.v,a,ln:t.ln}}
+ SE(`unexpected ${t.k=="e"?"end of file":"'"+t.v+"'"} in expression`)};
+const args2=c=>{const a=[];if(!isP(c))a.push(ex());while(isP(",")){p++;a.push(ex())}ex_(c);return a};
+const block=()=>{ex_("{");const b=[];while(!isP("}")){if(T[p].k=="e")SE("unexpected end of file, expecting '}'");b.push(st())}p++;return b};
+const st=()=>{const t=T[p],ln=t.ln;
+ if(t.k=="w"){const w=t.v;
+  if(w=="when"||w=="repeat"){p++;ex_("(");const c=ex();ex_(")");return{t:w,c,b:block(),ln}}
+  if(w=="stop"||w=="skip"){p++;ex_("(");ex_(")");ex_(";");return{t:w,ln}}
+  if(w=="return"){p++;ex_("(");const e=isP(")")?null:ex();ex_(")");ex_(";");return{t:"ret",e,ln}}
+  if(w=="function"){p++;const n=T[p];if(n.k!="w"||FN.includes(n.v))SE("function needs a name");p++;ex_("(");const ps=[];
+   if(!isP(")")){do{if(ps.length)p++;const q=T[p];if(q.k!="w"||FN.includes(q.v))SE("bad parameter name");ps.push(q.v);p++}while(isP(","))}ex_(")");return{t:"fn",n:n.v,ps,b:block(),ln}}
+  if(w=="print"||w=="create"||w=="update"){p++;ex_("(");const a=args();ex_(")");ex_(";");
+   if(w=="print"?a.length!=1:a.length!=2||a[0].t!="v"||typeof a[0].v!="string")SE(w=="print"?"print() needs one value":w+'() needs "name", value');return{t:w,a,ln}}}
+ const e=ex();ex_(";");return{t:"x",e,ln}};
+const prog=[];while(T[p].k!="e")prog.push(st());
+const chk=(b,loop,fn)=>{for(const s of b){if(s.t=="when")chk(s.b,loop,fn);else if(s.t=="repeat")chk(s.b,1,fn);else if(s.t=="fn"){if(new Set(s.ps).size<s.ps.length)E("semantic",s.ln,`function '${s.n}' has two parameters named the same`);chk(s.b,0,1)}
+ else if((s.t=="stop"||s.t=="skip")&&!loop)E("semantic",s.ln,`${s.t}() can only be used inside repeat()`);else if(s.t=="ret"&&!fn)E("semantic",s.ln,"return() can only be used inside a function")}};
+chk(prog,0,0);
+// ---- runtime ----
+let cl=0,vars=[],bound=0,fns={},depth=0,retv=0n,steps=0,inp=0;
+const R=m=>E("runtime",cl,m);
+const tn=v=>typeof v=="bigint"?"integer":typeof v=="number"?"float":typeof v=="string"?"string":typeof v=="boolean"?"boolean":"list";
+const isN=v=>typeof v=="bigint"||typeof v=="number";
+const fmt=v=>typeof v=="bigint"?String(v):typeof v=="number"?String(parseFloat(v.toPrecision(15))):typeof v=="boolean"?String(v):Array.isArray(v)?"["+v.map(fmt).join(", ")+"]":v;
+const eq=(a,b)=>isN(a)&&isN(b)?Number(a)==Number(b):Array.isArray(a)&&Array.isArray(b)?a.length==b.length&&a.every((x,i)=>eq(x,b[i])):a===b;
+const ord=(a,b)=>{if(isN(a)&&isN(b))return Number(a)<Number(b)?-1:Number(a)>Number(b)?1:0;if(typeof a=="string"&&typeof b=="string")return a<b?-1:a>b?1:0;R(`cannot order a ${tn(a)} and a ${tn(b)} (only two numbers or two strings can be ordered)`)};
+const MX=2n**63n-1n,MN=-(2n**63n);
+const ar=(op,a,b,w)=>{if(op=="%"){if(typeof a!="bigint"||typeof b!="bigint")R(w+" requires two integers");if(b==0n)R(w+": modulo by zero");return a%b}
+ if(!isN(a)||!isN(b))R(`${w} requires numbers (got ${tn(a)} and ${tn(b)})`);const ints=typeof a=="bigint"&&typeof b=="bigint";let r;
+ if(op=="/"){if(Number(b)==0)R(w+": division by zero");if(ints&&a%b==0n)r=a/b;else r=Number(a)/Number(b)}
+ else if(ints)r=op=="+"?a+b:op=="-"?a-b:a*b;else{a=Number(a);b=Number(b);r=op=="+"?a+b:op=="-"?a-b:a*b}
+ if(typeof r=="bigint"&&(r>MX||r<MN))R(w+": integer overflow");if(typeof r=="number"&&!isFinite(r))R(w+": floating-point overflow");return r};
+const find=n=>{for(let i=vars.length-1;i>=0;i--)if(vars[i].n==n)return vars[i];R(`undefined variable '${n}'`)};
+const decl=(n,v)=>{for(let i=bound;i<vars.length;i++)if(vars[i].n==n)R(`variable '${n}' already exists in this scope; use update() to change it`);vars.push({n,v})};
+const tick=()=>{if(++steps>3e6)R("program ran too long (infinite loop?)")};
+const L=(f,a,n)=>{if(a.length!=n)R(`${f}() expects ${n} argument(s) but got ${a.length}`);if(!Array.isArray(a[0]))R(`${f}() expects a list as its first argument (got ${tn(a[0])})`);return a[0]};
+const idx=(f,l,x)=>{if(typeof x!="bigint")R(f+"() index must be an integer");if(x<0n||x>=BigInt(l.length))R(`${f}() index ${x} is out of range (the list has ${l.length} element(s))`);return Number(x)};
+const conv=(v,t)=>{const s=typeof v=="string";
+ if(t=="string"){if(Array.isArray(v))R("convert(): a list cannot be converted to string");return fmt(v)}
+ if(t=="integer"||t=="int"){if(typeof v=="bigint")return v;if(typeof v=="boolean")return v?1n:0n;if(typeof v=="number"){if(!isFinite(v)||Math.abs(v)>=2**63)R("convert(): float is out of the integer range");return BigInt(Math.trunc(v))}
+  if(s){const x=v.trim();if(!/^[+-]?\d+$/.test(x)||BigInt(x)>MX||BigInt(x)<MN)R(`convert(): "${v}" is not a valid integer`);return BigInt(x)}R("convert(): a list cannot be converted to integer")}
+ if(t=="float"){if(isN(v))return Number(v);if(typeof v=="boolean")return v?1:0;if(s){const x=v.trim();if(!/^[0-9+\-.eE]+$/.test(x)||!isFinite(Number(x)))R(`convert(): "${v}" is not a valid float`);return Number(x)}R("convert(): a list cannot be converted to float")}
+ if(t=="boolean"||t=="bool"){if(typeof v=="boolean")return v;if(s){if(v=="true")return true;if(v=="false")return false;R(`convert(): "${v}" is not a valid boolean (use "true" or "false")`)}if(Array.isArray(v))R("convert(): a list cannot be converted to boolean");return Number(v)!=0}
+ R(`convert(): unknown target type "${t}" (use "integer", "float", "string" or "boolean")`)};
+const truth=v=>typeof v=="boolean"?v:isN(v)?Number(v)!=0:typeof v=="string"?v.length>0:R("a list cannot be used as a condition");
+const call=(f,a)=>{const n=f.n;let A=a;
+ const ne=k=>{if(A.length!=k)R(`${n}() expects ${k} argument(s) but got ${A.length}`)};
+ switch(n){case"add":ne(2);return ar("+",A[0],A[1],"add()");case"subtract":ne(2);return ar("-",A[0],A[1],"subtract()");case"multiply":ne(2);return ar("*",A[0],A[1],"multiply()");
+ case"divide":ne(2);return ar("/",A[0],A[1],"divide()");case"modulo":ne(2);return ar("%",A[0],A[1],"modulo()");
+ case"input":{ne(1);out(fmt(A[0]));if(inp>=stdin.length)R("input() could not read a line (end of input) - type your input lines in the box under the code");const l=stdin[inp++];out(l+"\n");return l}
+ case"compare":{ne(3);if(typeof A[1]!="string")R('compare() second argument must be an operator string such as ">"');const o=A[1];if(o=="==")return eq(A[0],A[2]);if(o=="!=")return!eq(A[0],A[2]);
+  if(!["<","<=",">",">="].includes(o))R(`unsupported compare() operator "${o}" (use ==, !=, >, <, >= or <=)`);const c=ord(A[0],A[2]);return o=="<"?c<0:o=="<="?c<=0:o==">"?c>0:c>=0}
+ case"convert":ne(2);if(typeof A[1]!="string")R('convert() target type must be a string such as "integer"');return conv(A[0],A[1]);
+ case"count":return BigInt(L(n,A,1).length);
+ case"reverse":return L(n,A,1).reverse();
+ case"sort":{const l=L(n,A,1);l.sort(ord);return l}
+ case"append":{const l=L(n,A,2);l.push(A[1]);return l}
+ case"find":{const l=L(n,A,2);return BigInt(l.findIndex(x=>eq(x,A[1])))}
+ case"at":{const l=L(n,A,2);return l[idx(n,l,A[1])]}
+ case"remove":{const l=L(n,A,2);l.splice(idx(n,l,A[1]),1);return l}
+ case"call":{if(typeof A[0]!="string")R("call() first argument must be a function-name string");const d=fns[A[0]];if(!d)R(`unknown function '${A[0]}' in call() (define it with function before calling it)`);
+  A=A.slice(1);if(A.length!=d.ps.length)R(`function '${d.n}' expects ${d.ps.length} argument(s) but call() gave ${A.length}`);
+  if(depth>=1000)R(`maximum call depth (1000) exceeded in function '${d.n}' (infinite recursion?)`);
+  const sv=vars.length,sb=bound,sl=cl;bound=sv;depth++;d.ps.forEach((q,i)=>decl(q,A[i]));retv=0n;const r=run(d.b);const res=r=="ret"?retv:0n;vars.length=sv;bound=sb;depth--;cl=sl;return res}}
+ R(`unknown function '${n}'`)};
+const ev=e=>{tick();switch(e.t){case"v":return e.v;case"var":cl=e.ln;return find(e.n).v;case"l":return e.a.map(ev);case"c":{const a=e.a.map(ev);cl=e.ln;return call(e,a)}
+ case"b":{const a=ev(e.l),b=ev(e.r);cl=e.ln;return ar(e.op,a,b,"operator "+e.op)}}};
+const run=b=>{for(const s of b){tick();cl=s.ln;switch(s.t){
+ case"print":out(fmt(ev(s.a[0]))+"\n");break;case"create":{const v=ev(s.a[1]);cl=s.ln;decl(s.a[0].v,v);break}
+ case"update":{const v=ev(s.a[1]);cl=s.ln;find(s.a[0].v).v=v;break}
+ case"x":ev(s.e);break;case"when":{const c=ev(s.c);cl=s.ln;if(truth(c)){const r=run(s.b);if(r)return r}break}
+ case"repeat":{const c=ev(s.c);cl=s.ln;if(!isN(c)||Number(c)<0||!Number.isInteger(Number(c)))R("repeat() requires a non-negative whole number");
+  for(let i=0;i<Number(c);i++){const r=run(s.b);if(r=="stop")break;if(r=="skip")continue;if(r=="ret")return r}break}
+ case"stop":return"stop";case"skip":return"skip";case"ret":retv=s.e?ev(s.e):0n;return"ret";case"fn":fns[s.n]=s;break}}};
+run(prog);}
+
+</script>
+<script>
+const C=(code,o={})=>({code,...o}), S=String.raw;
+// block: string = html; object = playground {code, stdin?, goal?, want?, title?}
+const L=[
+{t:"Hello, world",b:[`<h2>1. Your first program</h2><p><code>print()</code> shows a value. Text goes in <code>"quotes"</code> and every statement ends with <code>;</code>. Press <b>▶ Run</b>.</p>`,
+ C(S`print("Hello World!");
+print("Welcome to ShakilScript!");`),`<div class=note>Try it: delete a <code>;</code> and run. The error tells you the line and what is missing. Add a <code>// comment</code> line too — comments are ignored.</div>`,
+ C(S`// Challenge: make the output exactly the two lines below
+print("Hello");`,{title:"Challenge",want:"Hello\nI am learning ShakilScript\n",goal:"Print: Hello, then: I am learning ShakilScript"})]},
+{t:"Variables & types",b:[`<h2>2. Variables</h2><p><code>create("name", value)</code> makes a variable, <code>update</code> changes it, <code>get("name")</code> reads it. Values can be integers (<code>24</code>), floats (<code>3.85</code>), strings, booleans (<code>true</code>/<code>false</code>) or lists.</p>`,
+ C(S`create("name", "Shakil");
+create("age", 20);
+create("cgpa", 3.90);
+create("is_student", true);
+update("age", 24);
+print(get("name"));
+print(get("age"));
+print(get("cgpa"));
+print(get("is_student"));`),`<div class=note>Try: <code>create("age", 1);</code> twice (error: already exists) or <code>get("height")</code> (error: undefined variable).</div>`,
+ C(S`// Challenge: create "city" = "Dhaka", then print it
+`,{title:"Challenge",want:"Dhaka\n",goal:"Create a variable named city holding Dhaka and print it"})]},
+{t:"Input",b:[`<h2>3. Asking the user: input()</h2><p><code>input("message")</code> returns what the user types — always as <b>text</b>. Type the lines your program will ask for in the box under the code (separate several with <code>|</code>).</p>`,
+ C(S`create("name", input("Enter your name: "));
+print("Welcome!");
+print(get("name"));`,{stdin:"Shakil"}),
+ `<p>To do maths on typed numbers, convert them first:</p>`,
+ C(S`create("age", convert(input("Age: "), "integer"));
+print(add(get("age"), 1));`,{stdin:"24"}),
+ C(S`// Challenge: read a number and print it doubled (input is 21)
+`,{title:"Challenge",stdin:"21",want:"21\n42\n",goal:"Read a number (input is 21), print it doubled. The typed line is echoed like in a terminal, so the output is 21 then 42."})]},
+{t:"Maths",b:[`<h2>4. Arithmetic</h2><p><code>add subtract multiply divide modulo</code> — or the operators <code>+ - * /</code> with normal precedence. Exact integer division stays an integer (<code>divide(20,5)</code> → 4); otherwise you get a float. Dividing by zero is an error.</p>`,
+ C(S`print(add(10, 20));
+print(subtract(20, 5));
+print(multiply(5, 4));
+print(divide(20, 5));
+print(divide(7, 2));
+print(modulo(10, 3));
+print(10 + 20 * 2);
+print((10 + 20) * 2);`),
+ C(S`// Challenge: print the remainder of 47 divided by 5
+`,{title:"Challenge",want:"2\n",goal:"Print the remainder of 47 / 5"})]},
+{t:"Decisions",b:[`<h2>5. compare() and when()</h2><p><code>compare(a, "op", b)</code> gives <code>true</code>/<code>false</code> for <code>== != &gt; &lt; &gt;= &lt;=</code>. <code>when(condition) { … }</code> runs its block only if true.</p>`,
+ C(S`create("age", 20);
+print(compare(get("age"), ">", 18));
+when(compare(get("age"), ">=", 18)) {
+    print("You are an adult");
+}
+when(compare(get("age"), "<", 18)) {
+    print("You are a minor");
+}`),
+ C(S`// Challenge: marks is 72. Print "Pass" when marks >= 40
+create("marks", 72);
+`,{title:"Challenge",want:"Pass\n",goal:'Print "Pass" when marks is at least 40'})]},
+{t:"Loops",b:[`<h2>6. repeat, stop, skip</h2><p><code>repeat(n) { … }</code> runs a block n times. <code>stop();</code> leaves the loop, <code>skip();</code> jumps to the next round. Both only work inside <code>repeat</code>.</p>`,
+ C(S`create("i", 0);
+repeat(6) {
+    update("i", add(get("i"), 1));
+    when(compare(modulo(get("i"), 2), "==", 0)) { skip(); }
+    when(compare(get("i"), "==", 5)) { stop(); }
+    print(get("i"));
+}`),`<div class=note>Try an infinite-looking loop like <code>repeat(99999999)</code> — the page stops it safely.</div>`,
+ C(S`// Challenge: print the numbers 1 to 5, one per line
+create("n", 0);
+`,{title:"Challenge",want:"1\n2\n3\n4\n5\n",goal:"Print 1 2 3 4 5 (one per line) using repeat"})]},
+{t:"Functions",b:[`<h2>7. Your own functions</h2><p>Define with <code>function name(params) { … }</code>, send a result back with <code>return(value)</code>, run with <code>call("name", args)</code>. Parameters are read by bare name. A function must be defined before it is called, and variables it creates are local.</p>`,
+ C(S`function square(number) {
+    return(multiply(number, number));
+}
+function greet(name) {
+    print("Hello!");
+    print(name);
+}
+print(call("square", 5));
+call("greet", "Shakil");`),
+ C(S`// Challenge: write function cube(x) and print cube of 3 (27)
+`,{title:"Challenge",want:"27\n",goal:"Define cube(x) returning x*x*x and print call(\"cube\", 3)"})]},
+{t:"Lists",b:[`<h2>8. Collections</h2><p>Lists use <code>[ ]</code>. <code>sort find at append remove count reverse</code> — indexes start at 0, <code>remove</code> takes an index, <code>find</code> gives the position or <code>-1</code>. Sort/append/remove/reverse change the list itself.</p>`,
+ C(S`create("numbers", [5, 2, 8, 1, 3]);
+sort(get("numbers"));
+print(get("numbers"));
+print(find(get("numbers"), 8));
+print(at(get("numbers"), 0));
+append(get("numbers"), 10);
+remove(get("numbers"), 2);
+reverse(get("numbers"));
+print(get("numbers"));
+print(count(get("numbers")));`),
+ C(S`// Challenge: sort [9, 4, 7] and print the largest (last) item
+create("v", [9, 4, 7]);
+`,{title:"Challenge",want:"9\n",goal:"Print the largest number of the list (use sort and at)"})]},
+{t:"Convert",b:[`<h2>9. convert()</h2><p><code>convert(value, "integer" | "float" | "string" | "boolean")</code>. Bad conversions are errors.</p>`,
+ C(S`print(convert("25", "integer") + 5);
+print(convert("3.50", "float"));
+print(convert(100, "string"));
+print(convert("true", "boolean"));
+print(convert("abc", "integer"));`),`<div class=note>The last line fails on purpose: <code>"abc"</code> is not a number.</div>`]},
+{t:"Error hunt",b:[`<h2>10. Fix the bugs</h2><p>Each program below has one mistake. Fix it so it prints <b>done</b> (or the stated output).</p>`,
+ C(S`print("one")
+print("two");`,{title:"Bug 1 — want: one, two",want:"one\ntwo\n",goal:"Fix it"}),
+ C(S`create("count_a", 5);
+print(get("count_b"));`,{title:"Bug 2 — want: 5",want:"5\n",goal:"Fix it"}),
+ C(S`stop();
+print("done");`,{title:"Bug 3 — want: done",want:"done\n",goal:"Fix it"}),
+ C(S`print(divide(10, 0));
+print("done");`,{title:"Bug 4 — want: done",want:"done\n",goal:"Fix it"})]},
+{t:"Sandbox & cheat sheet",b:[`<h2>11. Free sandbox</h2><p>Write anything. Pick a starter:</p><p id=starters></p>`,
+ C("",{title:"Sandbox",free:1,stdin:""}),
+ `<h3>All 25 functions</h3><table><tr><th>Group</th><th>Functions</th></tr><tr><td>Output / input</td><td><code>print input</code></td></tr><tr><td>Variables</td><td><code>create update get</code></td></tr><tr><td>Maths</td><td><code>add subtract multiply divide modulo</code></td></tr><tr><td>Decisions</td><td><code>compare when</code></td></tr><tr><td>Loops</td><td><code>repeat stop skip</code></td></tr><tr><td>Functions</td><td><code>return call</code> (+ <code>function</code> keyword)</td></tr><tr><td>Lists</td><td><code>sort find at append remove count reverse</code></td></tr><tr><td>Types</td><td><code>convert</code></td></tr></table>
+ <h3>Quick quiz</h3><div id=quiz></div>`]}
+];
+const STARTERS={"Calculator":S`create("a", convert(input("A: "), "float"));
+create("b", convert(input("B: "), "float"));
+print(add(get("a"), get("b")));`,"Times table":S`create("i", 1);
+repeat(10) {
+    print(multiply(7, get("i")));
+    update("i", add(get("i"), 1));
+}`,"Fibonacci":S`function fib(n) {
+    when(compare(n, "<", 2)) { return(n); }
+    return(add(call("fib", subtract(n, 1)), call("fib", subtract(n, 2))));
+}
+print(call("fib", 15));`};
+const Q=[["Which function changes an existing variable?",["get","create","update"],2],["What does modulo(10, 3) return?",["1","3","0"],0],["What does input() return?",["a number","text","a list"],1],["Where may stop() be used?",["anywhere","inside repeat","inside when only"],1]];
+let cur=0,done=JSON.parse(localStorage.getItem("ss2-done")||"[]");const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function save(){try{localStorage.setItem("ss2-done",JSON.stringify(done))}catch(e){}}
+function prog(){$("pb").style.width=done.length/L.length*100+"%";$("pt").textContent=done.length+" of "+L.length+" lessons done";$("nav").innerHTML="";L.forEach((l,i)=>{const b=document.createElement("button");b.className="nav"+(i==cur?" active":"");b.textContent=(done.includes(i)?"✓ ":"")+(i+1)+". "+l.t;b.onclick=()=>show(i);$("nav").appendChild(b)})}
+function runBox(box){const ta=box.querySelector("textarea"),st=box.querySelector(".stdin"),out=box.querySelector(".out"),chk=box.querySelector(".chk");let o="";out.className="out";
+ try{ShakilRun(ta.value,st?st.value.split("|"):[],s=>o+=s)}catch(e){o+=(o&&!o.endsWith("\n")?"\n":"")+e.message;out.className="out err";var bad=1}
+ out.textContent=o||"(no output)";
+ if(box.dataset.want!==undefined){const ok=!bad&&o==box.dataset.want;chk.textContent=ok?"✅ Correct!":"❌ Not yet — expected:\n"+box.dataset.want.trim().split("\n").join(" ⏎ ");chk.style.color=ok?"var(--good)":"var(--bad)";
+  if(ok){box.dataset.ok=1;if(L[cur].b.filter(x=>x.want!==undefined).length==[...document.querySelectorAll(".pg")].filter(x=>x.dataset.ok).length&&!done.includes(cur)){done.push(cur);save();prog()}}}}
+function show(i){cur=Math.max(0,Math.min(L.length-1,i));const l=L[cur];let h="";
+ l.b.forEach(b=>{if(typeof b=="string")h+=b;else{const needIn=b.stdin!==undefined||/input\(/.test(b.code);
+  h+=`<div class=pg ${b.want!==undefined?`data-want="${esc(b.want).replace(/"/g,"&quot;")}"`:""}><div class=t>${b.title||"Example — edit me!"}${b.goal?" · "+esc(b.goal):""}</div><textarea spellcheck=false>${esc(b.code)}</textarea>${needIn?`<input class=stdin placeholder="input() lines, separated by |" value="${esc(b.stdin||"")}">`:""}<div class=ctl><button class=primary>▶ Run</button><button class=rs>Reset</button><span class=chk></span></div><pre class=out>Press ▶ Run</pre></div>`}});
+ $("art").innerHTML=h;document.querySelectorAll(".pg").forEach((box,k)=>{const code=l.b.filter(x=>typeof x!="string")[k].code;box.querySelector(".primary").onclick=()=>runBox(box);box.querySelector(".rs").onclick=()=>{box.querySelector("textarea").value=code;box.querySelector(".out").textContent="Press ▶ Run"};box.querySelector("textarea").onkeydown=e=>{if(e.ctrlKey&&e.key=="Enter")runBox(box)}});
+ if($("starters")){Object.keys(STARTERS).forEach(k=>{const b=document.createElement("button");b.textContent=k;b.onclick=()=>{document.querySelector("textarea").value=STARTERS[k]};$("starters").append(b," ")})}
+ if($("quiz")){let ok=0;Q.forEach(([q,o,a])=>{const d=document.createElement("div");d.className="q";d.innerHTML="<b>"+q+"</b><br>";const f=document.createElement("div");o.forEach((t,j)=>{const b=document.createElement("button");b.textContent=t;b.onclick=()=>{f.textContent=j==a?"✅ Correct":"❌ Try again";f.style.color=j==a?"var(--good)":"var(--bad)";if(j==a&&!d.dataset.c){d.dataset.c=1;ok++;if(ok==Q.length&&!done.includes(cur)){done.push(cur);save();prog()}}};d.append(b)});d.append(f);$("quiz").append(d)})}
+ if(!l.b.some(x=>x.want!==undefined)&&!l.b.some(x=>typeof x!="string"&&x.free)&&cur<L.length-1&&!done.includes(cur)){}
+ if(!l.b.some(x=>typeof x!="string"&&x.want!==undefined)&&!["Sandbox & cheat sheet"].includes(l.t)&&!done.includes(cur)){done.push(cur);save()}
+ $("prev").disabled=cur==0;$("next").disabled=cur==L.length-1;prog();scrollTo(0,0)}
+$("prev").onclick=()=>show(cur-1);$("next").onclick=()=>show(cur+1);
+$("reset").onclick=()=>{if(confirm("Reset progress?")){done=[];save();show(0)}};
+$("theme").onclick=()=>{const d=document.documentElement.dataset.theme!="dark";document.documentElement.dataset.theme=d?"dark":"light";try{localStorage.setItem("ss2-theme",d?"dark":"light")}catch(e){}};
+try{document.documentElement.dataset.theme=localStorage.getItem("ss2-theme")||"light"}catch(e){}
+show(0);
+</script></body></html>

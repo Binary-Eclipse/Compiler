@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run current ShakilScript file",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "./scripts/run.sh \"${file}\"",
+      "windows": { "command": ".\\scripts\\run.bat \"${file}\"" },
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

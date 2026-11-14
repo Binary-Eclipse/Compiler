@@ -1,0 +1,10 @@
+create("age", 20);
+update("age", 24);
+print(get("age"));
+update("age", add(get("age"), 1));
+print(get("age"));
+update("age", "twenty-six");
+print(get("age"));
+create("other", 1);
+update("other", get("age"));
+print(get("other"));

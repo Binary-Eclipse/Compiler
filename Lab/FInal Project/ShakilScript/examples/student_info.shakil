@@ -1,0 +1,13 @@
+// Student information program
+
+create("name", "Shakil");
+create("age", 24);
+create("department", "CSE");
+create("cgpa", 3.90);
+
+print("Student Information");
+
+print(get("name"));
+print(get("age"));
+print(get("department"));
+print(get("cgpa"));

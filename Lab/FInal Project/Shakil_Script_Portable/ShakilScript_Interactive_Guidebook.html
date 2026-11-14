@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShakilScript — Interactive Beginner Guidebook</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#182033;--muted:#657089;--accent:#5b55d9;--border:#e2e6ef;--code:#111827;--good:#16794b;--warn:#986000}
+[data-theme="dark"]{--bg:#101522;--panel:#1a2232;--text:#eef2ff;--muted:#aab4ca;--accent:#aaa4ff;--border:#303b50;--code:#090d16;--good:#6bd6a2;--warn:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(120deg,#27246f,#5b55d9);color:white;padding:28px max(22px,calc((100% - 1200px)/2))}
+header h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem)}header p{max-width:780px;margin:8px 0 0;color:#e4e3ff}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}.top button{background:#fff;color:#302c80;border:0;border-radius:9px;padding:9px 13px;font-weight:650;cursor:pointer}
+.layout{max-width:1200px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px}
+aside,.content{background:var(--panel);border:1px solid var(--border);border-radius:15px}
+aside{padding:16px;height:max-content;position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto}
+aside h2{font-size:1rem;margin:4px 8px 10px}.nav{display:block;width:100%;text-align:left;padding:9px 10px;border:0;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;font-size:.94rem}
+.nav:hover,.nav.active{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--text);font-weight:650}
+.content{padding:clamp(18px,4vw,38px);min-height:75vh}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+input[type=search]{flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text)}
+h2{line-height:1.25}h3{margin-top:25px}.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:750}
+.lead{font-size:1.08rem;color:var(--muted)}.note{padding:13px 15px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--panel));border-radius:8px;margin:16px 0}
+.warning{border-left-color:#d49a27}.status{display:inline-block;border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:750;background:#e7f6ee;color:#17633e}
+.status.planned{background:#fff2d5;color:#795000}[data-theme=dark] .status{background:#173d30;color:#9be2bf}[data-theme=dark] .status.planned{background:#49391b;color:#ffdc91}
+pre{background:var(--code);color:#e5e7eb;border-radius:11px;padding:17px;overflow:auto;position:relative;font: .91rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+.copy{position:absolute;right:9px;top:9px;border:1px solid #536078;background:#263248;color:#fff;padding:5px 9px;border-radius:7px;cursor:pointer}
+code{font-family:ui-monospace,Consolas,monospace}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted)}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.mini{border:1px solid var(--border);padding:14px;border-radius:11px}.mini strong{display:block}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.actions button,.primary{background:var(--accent);color:white;border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font-weight:650}
+.quiz{border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}.quiz label{display:block;padding:7px;cursor:pointer}.feedback{font-weight:650;margin-top:9px}.muted{color:var(--muted)}.progress{height:8px;background:var(--border);border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent);width:0}
+footer{text-align:center;color:var(--muted);padding:28px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}aside{position:static;max-height:none}.nav{display:inline-block;width:auto}.content{min-height:60vh}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow" style="color:#c8c5ff">Interactive programming guidebook</div>
+  <h1>Learn ShakilScript</h1>
+  <p>A beginner-friendly guide to the ShakilScript language: start with your first program, learn variables and calculations, then explore decisions, loops, functions and collections.</p>
+  <div class="top"><button id="themeBtn">🌙 Toggle theme</button><button id="resetBtn">Reset progress</button></div>
+</header>
+<div class="layout">
+<aside>
+  <h2>📚 Chapters</h2>
+  <div class="progress"><span id="progressBar"></span></div>
+  <p class="muted" id="progressText" style="font-size:.82rem;margin:7px 8px 12px">0 of 14 lessons completed</p>
+  <nav id="nav"></nav>
+</aside>
+<main class="content">
+  <div class="toolbar"><input id="search" type="search" placeholder="Search lessons, functions, or concepts..."></div>
+  <article id="lesson"></article>
+  <div class="actions"><button id="prevBtn">← Previous</button><button id="completeBtn" class="primary">Mark lesson complete ✓</button><button id="nextBtn">Next →</button></div>
+</main>
+</div>
+<footer>ShakilScript Interactive Guidebook · Beginner edition · Offline single-file edition</footer>
+<script>
+const lessons = [
+{title:"Start here",tag:"Introduction",body:`
+<div class="eyebrow">Welcome</div><h2>1. What is ShakilScript?</h2>
+<p class="lead">ShakilScript is a small programming language project created for a Compiler Design Lab. Its English-style function names are intended to make programs easier for beginners to read.</p>
+<div class="note"><b>Important project status:</b> This guide explains the intended language design. Your current build reported Bison errors in <code>parser.y</code>. The newer features must be integrated and tested before they can be treated as working language features.</div>
+<h3>What you will learn</h3><div class="cardgrid">
+<div class="mini"><strong>Basic programming</strong>Output, input, variables and data types.</div><div class="mini"><strong>Problem solving</strong>Arithmetic, comparisons and decisions.</div><div class="mini"><strong>Program flow</strong>Loops, break/continue and functions.</div><div class="mini"><strong>Data handling</strong>Collections, searching, sorting and conversion.</div></div>
+<h3>How to use this guide</h3><ol><li>Read one chapter at a time.</li><li>Type the examples into a file ending in <code>.ss</code>.</li><li>Run examples only after the matching feature is implemented in your interpreter.</li><li>Try the quiz and mark the chapter complete.</li></ol>`},
+{title:"Setup & run",tag:"Getting started",body:`
+<div class="eyebrow">Getting started</div><h2>2. Set up and run ShakilScript</h2>
+<p>To build the interpreter from source on Windows, use an MSYS2 UCRT64 environment with GCC, Flex, Bison and Make installed.</p>
+<h3>Build from source</h3><pre><button class="copy">Copy</button><code>make clean
+make</code></pre>
+<p>When the build succeeds, it creates <code>shakilscript.exe</code>.</p>
+<h3>Run a program in MSYS2</h3><pre><button class="copy">Copy</button><code>./shakilscript.exe examples/first_program.ss</code></pre>
+<h3>Run a program in PowerShell</h3><pre><button class="copy">Copy</button><code>.\shakilscript.exe examples\\first_program.ss</code></pre>
+<div class="note warning"><b>Build troubleshooting:</b> If Bison reports errors in <code>parser.y</code>, fix the grammar/C type declarations first. Do not try to run the executable until <code>make</code> finishes successfully.</div>
+<h3>What is a .ss file?</h3><p>A <code>.ss</code> file contains source code written in ShakilScript. You can create one with a text editor such as VS Code or Notepad.</p>`},
+{title:"Your first program",tag:"Basics",body:`
+<div class="eyebrow">First steps</div><h2>3. Your first ShakilScript program</h2>
+<p>Create a file named <code>hello.ss</code> and write:</p><pre><button class="copy">Copy</button><code>print("Hello World!");
+print("Welcome to ShakilScript!");</code></pre>
+<p><code>print()</code> displays information. Text values are surrounded by quotation marks. A semicolon ends each statement.</p>
+<h3>Basic syntax rules</h3><ul><li>Use parentheses after function names.</li><li>Use double quotation marks for strings.</li><li>End statements with semicolons.</li><li>Use curly braces for blocks such as conditions and loops.</li><li>Use <code>//</code> for a single-line comment.</li></ul>
+<pre><button class="copy">Copy</button><code>// This is a comment
+print("I am learning programming.");</code></pre>`},
+{title:"Data types",tag:"Core concepts",body:`
+<div class="eyebrow">Core concepts</div><h2>4. Data types</h2><p>A data type describes the kind of value a program uses.</p>
+<table><tr><th>Type</th><th>Example</th><th>Meaning</th></tr><tr><td>Integer</td><td><code>24</code></td><td>Whole number</td></tr><tr><td>Float</td><td><code>3.85</code></td><td>Decimal number</td></tr><tr><td>String</td><td><code>"Shakil"</code></td><td>Text</td></tr><tr><td>Boolean</td><td><code>true</code> / <code>false</code></td><td>True or false value</td></tr></table>
+<pre><button class="copy">Copy</button><code>create("age", 24);
+create("cgpa", 3.85);
+create("name", "Shakil");
+create("is_student", true);</code></pre>
+<p>In the current starter interpreter, integer, float, string and Boolean literals are supported.</p>`},
+{title:"Variables",tag:"Functions 3–5",body:`
+<div class="eyebrow">Functions 3–5</div><h2>5. Variables: create, update and get</h2><p>A variable is a named place to store a value.</p>
+<h3><code>create(name, value)</code> — create a variable</h3><pre><button class="copy">Copy</button><code>create("age", 20);
+create("name", "Shakil");</code></pre>
+<h3><code>update(name, value)</code> — change a variable</h3><pre><button class="copy">Copy</button><code>create("age", 20);
+update("age", 24);
+print(get("age"));</code></pre>
+<h3><code>get(name)</code> — retrieve a value</h3><pre><button class="copy">Copy</button><code>create("department", "CSE");
+print(get("department"));</code></pre>
+<div class="note">The variable name is written as a string, for example <code>"age"</code>. The value can be a number, string or Boolean.</div>`},
+{title:"Input & output",tag:"Functions 1–2",body:`
+<div class="eyebrow">Functions 1–2</div><h2>6. Input and output</h2>
+<h3><code>print()</code> — display output</h3><pre><button class="copy">Copy</button><code>print("Hello!");
+print(2026);</code></pre>
+<h3><code>input()</code> — receive user input</h3><pre><button class="copy">Copy</button><code>create("name", input("Enter your name: "));
+print(get("name"));</code></pre>
+<p>Input is read as text in the current starter implementation. Numeric conversion is a separate operation and must be supported by the runtime.</p>`},
+{title:"Math operations",tag:"Functions 6–10",body:`
+<div class="eyebrow">Mathematical operations</div><h2>7. Arithmetic</h2><p>ShakilScript's arithmetic functions perform calculations.</p>
+<table><tr><th>Function</th><th>Purpose</th><th>Example</th></tr><tr><td><code>add(a,b)</code></td><td>Add</td><td><code>add(10, 5)</code></td></tr><tr><td><code>subtract(a,b)</code></td><td>Subtract</td><td><code>subtract(10, 5)</code></td></tr><tr><td><code>multiply(a,b)</code></td><td>Multiply</td><td><code>multiply(10, 5)</code></td></tr><tr><td><code>divide(a,b)</code></td><td>Divide</td><td><code>divide(10, 5)</code></td></tr><tr><td><code>modulo(a,b)</code></td><td>Remainder</td><td><code>modulo(10, 3)</code></td></tr></table>
+<pre><button class="copy">Copy</button><code>create("total", add(10, 20));
+create("difference", subtract(20, 5));
+create("product", multiply(5, 4));
+create("quotient", divide(20, 5));
+create("remainder", modulo(10, 3));
+
+print(get("total"));
+print(get("remainder"));</code></pre>
+<p>The expression operators <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code> are also supported by the starter grammar. Avoid dividing by zero.</p>`},
+{title:"Compare & conditions",tag:"Functions 11–12",planned:true,body:`
+<div class="eyebrow">Decision making · Planned integration</div><h2>8. Compare values and make decisions</h2>
+<p>Programs use comparisons to decide what to do.</p>
+<h3><code>compare(a, operator, b)</code></h3><table><tr><th>Operator</th><th>Meaning</th></tr><tr><td><code>==</code></td><td>Equal</td></tr><tr><td><code>!=</code></td><td>Not equal</td></tr><tr><td><code>&gt;</code></td><td>Greater than</td></tr><tr><td><code>&lt;</code></td><td>Less than</td></tr><tr><td><code>&gt;=</code></td><td>Greater than or equal</td></tr><tr><td><code>&lt;=</code></td><td>Less than or equal</td></tr></table>
+<pre><button class="copy">Copy</button><code>print(compare(10, ">", 5));</code></pre>
+<h3><code>when(condition)</code></h3><p>Run the block only when the condition is true.</p><pre><button class="copy">Copy</button><code>create("age", 20);
+
+when(compare(get("age"), ">=", 18)) {
+    print("You are an adult");
+}</code></pre>
+<div class="note warning">Planned syntax: these examples require the comparison and conditional grammar/runtime to be implemented and tested in your compiler.</div>`},
+{title:"Loops",tag:"Functions 13–15",planned:true,body:`
+<div class="eyebrow">Repeating work · Planned integration</div><h2>9. Loops: repeat, stop and skip</h2>
+<h3><code>repeat(count)</code></h3><p>Repeat a block a fixed number of times.</p><pre><button class="copy">Copy</button><code>repeat(5) {
+    print("Hello");
+}</code></pre>
+<h3><code>stop()</code></h3><p>Exit the current loop immediately.</p><pre><button class="copy">Copy</button><code>repeat(10) {
+    print("Only once");
+    stop();
+}</code></pre>
+<h3><code>skip()</code></h3><p>Skip the rest of the current iteration and continue with the next one.</p><pre><button class="copy">Copy</button><code>repeat(5) {
+    skip();
+    print("This line is skipped");
+}</code></pre>
+<div class="note warning">Planned syntax: loop control must be implemented in the parser and runtime. Use <code>stop()</code> and <code>skip()</code> only inside loops.</div>`},
+{title:"Functions",tag:"Functions 16–17",planned:true,body:`
+<div class="eyebrow">Reusable code · Planned integration</div><h2>10. User-defined functions</h2><p>A function is a named block of code that can be reused.</p>
+<h3>Define a function</h3><pre><button class="copy">Copy</button><code>function addNumbers(a, b) {
+    return(add(a, b));
+}</code></pre>
+<h3>Call a function</h3><pre><button class="copy">Copy</button><code>print(call("addNumbers", 10, 20));</code></pre>
+<p><code>return()</code> sends a result back. <code>call()</code> runs a previously defined function. The <code>function</code> keyword is syntax for defining a function; it is not an additional item in the 25-function list.</p>
+<div class="note warning">Planned syntax: function definitions, parameters, return values, scope and function calls need complete parser/runtime support.</div>`},
+{title:"Collections",tag:"Functions 18–24",planned:true,body:`
+<div class="eyebrow">Working with groups of values · Planned integration</div><h2>11. Collections</h2><p>A collection (list) stores several values together. The examples below use square-bracket list notation as the intended design.</p>
+<pre><button class="copy">Copy</button><code>create("numbers", [5, 3, 1, 4, 2]);</code></pre>
+<table><tr><th>Function</th><th>Purpose</th><th>Intended example</th></tr>
+<tr><td><code>sort()</code></td><td>Sort values</td><td><code>sort(get("numbers"));</code></td></tr>
+<tr><td><code>find()</code></td><td>Search for a value</td><td><code>find(get("numbers"), 4);</code></td></tr>
+<tr><td><code>at()</code></td><td>Read an indexed item</td><td><code>at(get("numbers"), 0);</code></td></tr>
+<tr><td><code>append()</code></td><td>Add an item</td><td><code>append(get("numbers"), 9);</code></td></tr>
+<tr><td><code>remove()</code></td><td>Remove an item</td><td><code>remove(get("numbers"), 0);</code></td></tr>
+<tr><td><code>count()</code></td><td>Count items</td><td><code>count(get("numbers"));</code></td></tr>
+<tr><td><code>reverse()</code></td><td>Reverse order</td><td><code>reverse(get("numbers"));</code></td></tr></table>
+<div class="note warning">Planned syntax: collection literals, indexing, mutation rules, return values and bounds checking must be defined and implemented. This guide assumes <code>remove()</code> removes by index; confirm that design in the runtime.</div>`},
+{title:"Type conversion",tag:"Function 25",planned:true,body:`
+<div class="eyebrow">Function 25 · Planned integration</div><h2>12. Convert data types</h2><p>Type conversion changes a value from one type to another.</p>
+<pre><button class="copy">Copy</button><code>convert("25", "integer");
+convert("3.50", "float");
+convert(100, "string");
+convert(true, "string");</code></pre>
+<p>Proposed target types are <code>"integer"</code>, <code>"float"</code>, <code>"string"</code> and <code>"boolean"</code>.</p>
+<div class="note warning">Planned syntax: define how invalid strings, decimal-to-integer conversion and Boolean conversion behave before finalizing the implementation.</div>`},
+{title:"Projects & practice",tag:"Apply your learning",body:`
+<div class="eyebrow">Practice</div><h2>13. Small projects to build</h2>
+<div class="cardgrid">
+<div class="mini"><strong>1. Personal profile</strong>Store and print a name, age, department and CGPA.</div>
+<div class="mini"><strong>2. Calculator</strong>Perform addition, subtraction, multiplication, division and modulo.</div>
+<div class="mini"><strong>3. Student result</strong>Take marks, calculate a total and decide whether the student passed (after conditions are implemented).</div>
+<div class="mini"><strong>4. Number collection</strong>Store values, sort them and count the items (after collections are implemented).</div></div>
+<h3>Practice checklist</h3><ul><li>Write the program yourself instead of only copying.</li><li>Predict the output before running it.</li><li>Test normal values and edge cases.</li><li>Read compiler errors carefully.</li></ul>`},
+{title:"All 25 functions & quiz",tag:"Review",body:`
+<div class="eyebrow">Review and self-test</div><h2>14. The 25 ShakilScript functions</h2>
+<table><tr><th>No.</th><th>Function</th><th>Purpose</th><th>Status in guide</th></tr>
+${["print — Display output","input — Receive input","create — Declare variable","update — Update variable","get — Retrieve variable","add — Addition","subtract — Subtraction","multiply — Multiplication","divide — Division","modulo — Remainder","compare — Compare values","when — Conditional execution","repeat — Repeat a block","stop — Exit loop","skip — Skip iteration","return — Return a value","call — Call a user function","sort — Sort a collection","find — Search a collection","at — Access an item","append — Add an item","remove — Remove an item","count — Count items","reverse — Reverse a collection","convert — Convert data type"].map((x,i)=>`<tr><td>${i+1}</td><td><code>${x.split(" — ")[0]}()</code></td><td>${x.split(" — ")[1]}</td><td>${i<10?'Starter subset':'Planned / verify'}</td></tr>`).join("")}
+</table>
+<div class="note">The original starter implementation supports the first ten names in its lexer/parser, with runtime support for the basic operations described earlier. Do not assume the remaining features work until the current source builds and tests pass.</div>
+<h3>Knowledge check</h3>
+<div class="quiz" data-answer="b"><b>1. Which function displays output?</b><label><input type="radio" name="q1" value="a"> input()</label><label><input type="radio" name="q1" value="b"> print()</label><label><input type="radio" name="q1" value="c"> create()</label><button class="primary check">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="c"><b>2. Which function updates an existing variable?</b><label><input type="radio" name="q2" value="a"> get()</label><label><input type="radio" name="q2" value="b"> create()</label><label><input type="radio" name="q2" value="c"> update()</label><button class="primary check">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="a"><b>3. What does modulo(10, 3) return?</b><label><input type="radio" name="q3" value="a"> 1</label><label><input type="radio" name="q3" value="b"> 3</label><label><input type="radio" name="q3" value="c"> 0</label><button class="primary check">Check answer</button><div class="feedback"></div></div>
+<div class="quiz" data-answer="b"><b>4. Which symbol ends a ShakilScript statement?</b><label><input type="radio" name="q4" value="a"> :</label><label><input type="radio" name="q4" value="b"> ;</label><label><input type="radio" name="q4" value="c"> ,</label><button class="primary check">Check answer</button><div class="feedback"></div></div>
+<div id="score" class="note" aria-live="polite">Answer the questions and check your score.</div>`}
+];
+let current=0;
+let completed=JSON.parse(localStorage.getItem("ss-completed")||"[]");
+const nav=document.getElementById("nav"), article=document.getElementById("lesson");
+function renderNav(filter=""){nav.innerHTML="";lessons.forEach((l,i)=>{if(!(`${l.title} ${l.tag} ${l.body}`.toLowerCase().includes(filter.toLowerCase())))return;let b=document.createElement("button");b.className="nav"+(i===current?" active":"");b.textContent=(completed.includes(i)?"✓ ":"")+(i+1)+". "+l.title;b.onclick=()=>show(i);nav.appendChild(b)})}
+function updateProgress(){document.getElementById("progressBar").style.width=(completed.length/lessons.length*100)+"%";document.getElementById("progressText").textContent=completed.length+" of "+lessons.length+" lessons completed"}
+function show(i){current=Math.max(0,Math.min(lessons.length-1,i));let l=lessons[current];article.innerHTML=(l.planned?'<p><span class="status planned">Planned / needs implementation testing</span></p>':'<p><span class="status">Foundation lesson</span></p>')+l.body;renderNav(document.getElementById("search").value);document.getElementById("prevBtn").disabled=current===0;document.getElementById("nextBtn").disabled=current===lessons.length-1;document.getElementById("completeBtn").textContent=completed.includes(current)?"Completed ✓":"Mark lesson complete ✓";document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{navigator.clipboard.writeText(b.parentElement.querySelector("code").innerText).then(()=>{b.textContent="Copied!"}).catch(()=>{b.textContent="Select and copy"})});document.querySelectorAll(".check").forEach(b=>b.onclick=()=>{let box=b.closest(".quiz"),selected=box.querySelector("input:checked"),feedback=box.querySelector(".feedback");if(!selected){feedback.textContent="Choose an answer first.";return}let ok=selected.value===box.dataset.answer;feedback.textContent=ok?"Correct! Well done.":"Not quite. Try again.";feedback.style.color=ok?"var(--good)":"var(--warn)";let boxes=[...document.querySelectorAll(".quiz")],score=boxes.filter(x=>x.querySelector("input:checked")&&x.querySelector("input:checked").value===x.dataset.answer).length;document.getElementById("score").textContent=`Your current score: ${score} / ${boxes.length}`})}
+document.getElementById("prevBtn").onclick=()=>show(current-1);document.getElementById("nextBtn").onclick=()=>show(current+1);
+document.getElementById("completeBtn").onclick=()=>{if(!completed.includes(current))completed.push(current);else completed=completed.filter(x=>x!==current);localStorage.setItem("ss-completed",JSON.stringify(completed));show(current);updateProgress()};
+document.getElementById("search").oninput=e=>renderNav(e.target.value);
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Reset all lesson progress?")){completed=[];localStorage.removeItem("ss-completed");show(current);updateProgress()}};
+document.getElementById("themeBtn").onclick=()=>{let dark=document.documentElement.dataset.theme!=="dark";document.documentElement.dataset.theme=dark?"dark":"light";localStorage.setItem("ss-theme",dark?"dark":"light")};
+document.documentElement.dataset.theme=localStorage.getItem("ss-theme")||"light";
+renderNav();show(0);updateProgress();
+</script>
+</body>
+</html>

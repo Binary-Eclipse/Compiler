@@ -1,0 +1,15 @@
+repeat(5) {
+    print("Hello");
+}
+repeat(0) { print("never"); }
+repeat(add(1, 1)) { print("two"); }
+create("i", 0);
+repeat(3) {
+    update("i", add(get("i"), 1));
+    print(get("i"));
+}
+repeat(2) {
+    repeat(2) { print("inner"); }
+    print("outer");
+}
+repeat(divide(6, 3)) { print("computed"); }

@@ -1,0 +1,16 @@
+print(add(10, 20));
+print(subtract(20, 5));
+print(multiply(5, 4));
+print(divide(20, 5));
+print(modulo(10, 3));
+print(add(1.5, 2.25));
+print(add(1, 2.5));
+print(subtract(1, 2.5));
+print(multiply(2, 0.5));
+print(divide(7, 2));
+print(divide(1, 4));
+print(add(-5, 3));
+print(modulo(-7, 3));
+print(modulo(divide(20, 5), 3));
+print(add(0.1, 0.2));
+print(add(add(1, 2), multiply(3, 4)));

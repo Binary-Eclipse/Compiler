@@ -1,0 +1,21 @@
+create("x", 1);
+function shadow() { create("x", 99); return(get("x")); }
+print(call("shadow"));
+print(get("x"));
+function useParam(x) { return(add(x, 1)); }
+print(call("useParam", 10));
+print(get("x"));
+
+create("total", 0);
+function addToTotal(amount) { update("total", add(get("total"), amount)); }
+call("addToTotal", 5);
+call("addToTotal", 7);
+print(get("total"));
+
+function loopy() { repeat(5) { stop(); } return("done"); }
+repeat(3) { print(call("loopy")); }
+
+function addItem(items, item) { append(items, item); }
+create("list1", [1]);
+call("addItem", get("list1"), 2);
+print(get("list1"));

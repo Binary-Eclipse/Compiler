@@ -1,0 +1,3 @@
+create("a", input(""));
+print(compare(get("a"), "==", "Bob"));
+print(convert(get("a"), "string"));

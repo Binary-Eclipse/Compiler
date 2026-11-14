@@ -1,0 +1,13 @@
+create("big", []);
+create("j", 1000);
+repeat(1000) {
+    append(get("big"), get("j"));
+    update("j", subtract(get("j"), 1));
+}
+sort(get("big"));
+print(at(get("big"), 0));
+print(at(get("big"), 999));
+print(count(get("big")));
+print(find(get("big"), 500));
+reverse(get("big"));
+print(at(get("big"), 0));

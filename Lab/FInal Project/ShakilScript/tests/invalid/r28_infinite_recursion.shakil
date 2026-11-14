@@ -1,0 +1,2 @@
+function f() { return(call("f")); }
+print(call("f"));

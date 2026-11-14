@@ -1,0 +1,3 @@
+create("name", input("Enter your name: "));
+print("Hello,");
+print(get("name"));
