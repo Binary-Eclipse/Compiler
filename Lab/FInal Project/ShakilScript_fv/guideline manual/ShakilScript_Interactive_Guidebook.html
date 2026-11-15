@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShakilScript — Interactive Beginner Guidebook (Python format)</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#182033;--muted:#657089;--accent:#5b55d9;--border:#e2e6ef;--code:#111827;--good:#16794b;--warn:#986000}
+[data-theme="dark"]{--bg:#101522;--panel:#1a2232;--text:#eef2ff;--muted:#aab4ca;--accent:#aaa4ff;--border:#303b50;--code:#090d16;--good:#6bd6a2;--warn:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(120deg,#27246f,#5b55d9);color:white;padding:28px max(22px,calc((100% - 1200px)/2))}
+header h1{margin:0;font-size:clamp(1.8rem,4vw,2.7rem)}header p{max-width:780px;margin:8px 0 0;color:#e4e3ff}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}.top button{background:#fff;color:#302c80;border:0;border-radius:9px;padding:9px 13px;font-weight:650;cursor:pointer}
+.layout{max-width:1200px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px}
+aside,.content{background:var(--panel);border:1px solid var(--border);border-radius:15px}
+aside{padding:16px;height:max-content;position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto}
+aside h2{font-size:1rem;margin:4px 8px 10px}.nav{display:block;width:100%;text-align:left;padding:9px 10px;border:0;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;font-size:.94rem}
+.nav:hover,.nav.active{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--text);font-weight:650}
+.content{padding:clamp(18px,4vw,38px);min-height:75vh}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+input[type=search]{flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text)}
+h2{line-height:1.25}h3{margin-top:25px}.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:750}
+.lead{font-size:1.08rem;color:var(--muted)}.note{padding:13px 15px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--panel));border-radius:8px;margin:16px 0}
+.warning{border-left-color:#d49a27}.status{display:inline-block;border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:750;background:#e7f6ee;color:#17633e}
+.status.planned{background:#fff2d5;color:#795000}[data-theme=dark] .status{background:#173d30;color:#9be2bf}[data-theme=dark] .status.planned{background:#49391b;color:#ffdc91}
+pre{background:var(--code);color:#e5e7eb;border-radius:11px;padding:17px;overflow:auto;position:relative;font: .91rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+.copy{position:absolute;right:9px;top:9px;border:1px solid #536078;background:#263248;color:#fff;padding:5px 9px;border-radius:7px;cursor:pointer}
+code{font-family:ui-monospace,Consolas,monospace}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted)}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.mini{border:1px solid var(--border);padding:14px;border-radius:11px}.mini strong{display:block}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.actions button,.primary{background:var(--accent);color:white;border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font-weight:650}
+.quiz{border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}.quiz label{display:block;padding:7px;cursor:pointer}.feedback{font-weight:650;margin-top:9px}.muted{color:var(--muted)}.progress{height:8px;background:var(--border);border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent);width:0}
+footer{text-align:center;color:var(--muted);padding:28px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}aside{position:static;max-height:none}.nav{display:inline-block;width:auto}.content{min-height:60vh}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow" style="color:#c8c5ff">Interactive programming guidebook</div>
+  <h1>Learn ShakilScript</h1>
+  <p>A beginner-friendly guide to the ShakilScript language, now in Python format: indentation instead of braces, no semicolons. Start with your first program, then explore variables, decisions, loops, functions and lists.</p>
+  <div class="top"><button id="themeBtn">🌙 Toggle theme</button><button id="resetBtn">Reset progress</button></div>
+</header>
+<div class="layout">
+<aside>
+  <h2>📚 Chapters</h2>
+  <div class="progress"><span id="progressBar"></span></div>
+  <p class="muted" id="progressText" style="font-size:.82rem;margin:7px 8px 12px">0 of 17 lessons completed</p>
+  <nav id="nav"></nav>
+</aside>
+<main class="content">
+  <div class="toolbar"><input id="search" type="search" placeholder="Search lessons, functions, or concepts..."></div>
+  <article id="lesson"></article>
+  <div class="actions"><button id="prevBtn">← Previous</button><button id="completeBtn" class="primary">Mark lesson complete ✓</button><button id="nextBtn">Next →</button></div>
+</main>
+</div>
+<footer>ShakilScript Interactive Guidebook · Python-format edition · Offline single-file edition</footer>
+<script>
+const lessons = [
+{title:"Start here",tag:"Introduction",body:`
+<div class="eyebrow">Welcome</div><h2>1. What is ShakilScript?</h2>
+<p class="lead">ShakilScript is a small programming language created for a Compiler Design Lab. It is built with Flex, Bison and C, and its syntax follows the <b>Python format</b>: blocks are made with indentation, there are no semicolons and no curly braces.</p>
+<div class="note"><b>Everything in this guide is tested.</b> Every example was run through ShakilScript and compared with real Python 3 — the output is identical. If you already know Python, you already know ShakilScript.</div>
+<h3>A first look</h3>
+<pre><button class="copy">Copy</button><code>name = "Shakil"
+for i in range(3):
+    if i % 2 == 0:
+        print(name, "says hello", i)</code></pre>
+<h3>What you will learn</h3><div class="cardgrid">
+<div class="mini"><strong>Basic programming</strong>Output, input, variables and data types.</div><div class="mini"><strong>Problem solving</strong>Arithmetic, comparisons and decisions.</div><div class="mini"><strong>Program flow</strong>Loops, break/continue and functions.</div><div class="mini"><strong>Data handling</strong>Lists, strings, searching, sorting and conversion.</div></div>
+<h3>How to use this guide</h3><ol><li>Read one chapter at a time.</li><li>Type the examples into a file ending in <code>.ss</code>.</li><li>Run them with the ShakilScript interpreter and compare with the shown output.</li><li>Try the quiz and mark the chapter complete.</li></ol>`},
+{title:"Setup & run",tag:"Getting started",body:`
+<div class="eyebrow">Getting started</div><h2>2. Set up and run ShakilScript</h2>
+<p>To build the interpreter from source on Windows, use an MSYS2 UCRT64 terminal with GCC, Flex, Bison and Make installed.</p>
+<h3>Install the tools (once)</h3>
+<pre><button class="copy">Copy</button><code>pacman -S mingw-w64-ucrt-x86_64-gcc flex bison make</code></pre>
+<h3>Build from source</h3>
+<pre><button class="copy">Copy</button><code>make clean
+make</code></pre>
+<p>When the build succeeds, it creates <code>shakilscript.exe</code>. (On Linux or macOS the same <code>make</code> works; the file keeps the name <code>shakilscript.exe</code>.)</p>
+<h3>Run a program in MSYS2</h3><pre><button class="copy">Copy</button><code>./shakilscript.exe examples/01_hello.ss</code></pre>
+<h3>Run a program in PowerShell</h3><pre><button class="copy">Copy</button><code>.\\shakilscript.exe examples\\01_hello.ss</code></pre>
+<h3>Check for errors without running</h3><pre><button class="copy">Copy</button><code>./shakilscript.exe --check examples/01_hello.ss</code></pre>
+<h3>Run the built-in test suite</h3><pre><button class="copy">Copy</button><code>make test</code></pre>
+<p>The tests run 29 programs and compare the results with the output of real Python.</p>
+<div class="note"><b>Tip:</b> A {c('.ss')} file is plain text. Create it with VS Code or Notepad. Use <b>4 spaces</b> for each indentation level.</div>`},
+{title:"Your first program",tag:"Basics",body:`
+<div class="eyebrow">First steps</div><h2>3. Your first ShakilScript program</h2>
+<p>Create a file named <code>hello.ss</code> and write:</p>
+<pre><button class="copy">Copy</button><code>print("Hello World!")
+print("Welcome to ShakilScript!")</code></pre>
+<p><code>print()</code> displays information. Text values are surrounded by quotation marks.</p>
+<h3>Basic syntax rules</h3><ul>
+<li>One statement per line — <b>no semicolons</b>.</li>
+<li>Blocks use <b>indentation</b> (4 spaces) — <b>no curly braces</b>.</li>
+<li>A line that starts a block (<code>if</code>, <code>elif</code>, <code>else</code>, <code>while</code>, <code>for</code>, <code>def</code>) ends with a colon <code>:</code>.</li>
+<li>Strings use <code>"double"</code> or <code>'single'</code> quotes.</li>
+<li>Comments start with <code>#</code>.</li>
+<li>Names are case-sensitive; <code>True</code>, <code>False</code> and <code>None</code> start with a capital letter.</li></ul>
+<pre><button class="copy">Copy</button><code># This is a comment
+print("I am learning programming.")   # comment after code</code></pre>
+<h3>Indentation matters</h3>
+<pre><button class="copy">Copy</button><code>if True:
+    print("inside the block")
+print("outside the block")</code></pre>`},
+{title:"Data types",tag:"Core concepts",body:`
+<div class="eyebrow">Core concepts</div><h2>4. Data types</h2><p>A data type describes the kind of value a program uses.</p>
+<table><tr><th>Type</th><th>Example</th><th>Meaning</th></tr><tr><td>Integer</td><td><code>24</code></td><td>Whole number (64-bit)</td></tr><tr><td>Float</td><td><code>3.85</code></td><td>Decimal number</td></tr><tr><td>String (str)</td><td><code>"Shakil"</code></td><td>Text</td></tr><tr><td>Boolean (bool)</td><td><code>True / False</code></td><td>True or false value</td></tr><tr><td>None</td><td><code>None</code></td><td>“no value”</td></tr><tr><td>List</td><td><code>[5, 3, 1]</code></td><td>Several values in order</td></tr></table>
+<pre><button class="copy">Copy</button><code>age = 24
+cgpa = 3.85
+name = "Shakil"
+is_student = True
+nothing = None
+marks = [80, 65, 90]
+print(age, cgpa, name, is_student, nothing, marks)</code></pre>
+<p>Output: <code>24 3.85 Shakil True None [80, 65, 90]</code></p>
+<div class="note">Division with {c('/')} always gives a float: {c('10 / 2')} is {c('5.0')}. Use {c('//')} for whole-number division.</div>`},
+{title:"Variables",tag:"Functions 3\u20135",body:`
+<div class="eyebrow">Functions 3–5</div><h2>5. Variables: create, update and get</h2>
+<p>A variable is a named place to store a value. In Python format there is no special keyword: you use <code>=</code>.</p>
+<h3>create — make a variable</h3><pre><button class="copy">Copy</button><code>age = 20
+name = "Shakil"</code></pre>
+<h3>update — change a variable</h3><pre><button class="copy">Copy</button><code>age = 20
+age = 24        # replace the value
+age += 1        # same as age = age + 1
+print(age)</code></pre>
+<h3>get — use a variable</h3><pre><button class="copy">Copy</button><code>department = "CSE"
+print(department)</code></pre>
+<table><tr><th>Shortcut</th><th>Meaning</th></tr><tr><td><code>x += 2</code></td><td><code>x = x + 2</code></td></tr><tr><td><code>x -= 2</code></td><td><code>x = x - 2</code></td></tr><tr><td><code>x *= 2</code></td><td><code>x = x * 2</code></td></tr><tr><td><code>x /= 2</code></td><td><code>x = x / 2</code></td></tr><tr><td><code>x //= 2</code></td><td><code>x = x // 2</code></td></tr><tr><td><code>x %= 2</code></td><td><code>x = x % 2</code></td></tr><tr><td><code>x **= 2</code></td><td><code>x = x ** 2</code></td></tr></table>
+<div class="note">Variable names may contain letters, digits and {c('_')}, but cannot start with a digit. Using a name before it exists gives {c('NameError')}.</div>`},
+{title:"Input & output",tag:"Functions 1\u20132",body:`
+<div class="eyebrow">Functions 1–2</div><h2>6. Input and output</h2>
+<h3>print() — display output</h3><pre><button class="copy">Copy</button><code>print("Hello!")
+print("Total:", 25, True)
+print("a", "b", "c", sep="-")
+print("no new line", end="")
+print(" &lt;- same line")</code></pre>
+<p><code>print</code> accepts several values, separated by a space. <code>sep=</code> changes the separator and <code>end=</code> changes what is printed at the end.</p>
+<h3>input() — receive user input</h3><pre><button class="copy">Copy</button><code>name = input("Enter your name: ")
+print("Hello,", name)</code></pre>
+<p><code>input()</code> always returns <b>text</b>. Convert it with <code>int()</code> or <code>float()</code> when you need a number:</p>
+<pre><button class="copy">Copy</button><code>age = int(input("Enter your age: "))
+print("Next year you will be", age + 1)</code></pre>`},
+{title:"Math operations",tag:"Functions 6\u201310",body:`
+<div class="eyebrow">Mathematical operations</div><h2>7. Arithmetic</h2><p>Arithmetic uses operators, exactly like Python.</p>
+<table><tr><th>Function</th><th>Operator</th><th>Example</th><th>Result</th></tr><tr><td>add</td><td><code>+</code></td><td><code>10 + 5</code></td><td><code>15</code></td></tr><tr><td>subtract</td><td><code>-</code></td><td><code>10 - 5</code></td><td><code>5</code></td></tr><tr><td>multiply</td><td><code>*</code></td><td><code>10 * 5</code></td><td><code>50</code></td></tr><tr><td>divide</td><td><code>/</code></td><td><code>10 / 4</code></td><td><code>2.5</code></td></tr><tr><td>modulo</td><td><code>%</code></td><td><code>10 % 3</code></td><td><code>1</code></td></tr><tr><td>(extra) floor divide</td><td><code>//</code></td><td><code>10 // 3</code></td><td><code>3</code></td></tr><tr><td>(extra) power</td><td><code>**</code></td><td><code>2 ** 10</code></td><td><code>1024</code></td></tr></table>
+<pre><button class="copy">Copy</button><code>total = 10 + 20
+difference = 20 - 5
+product = 5 * 4
+quotient = 20 / 5
+remainder = 10 % 3
+print(total, difference, product, quotient, remainder)
+print(7 // 2, -7 // 2, 2 ** 8, 7.5 % 2)</code></pre>
+<h3>Order of operations</h3><p><code>**</code> first, then <code>* / // %</code>, then <code>+ -</code>. Use parentheses to change the order:</p>
+<pre><button class="copy">Copy</button><code>print(1 + 2 * 3)
+print((1 + 2) * 3)
+print(-2 ** 2, (-2) ** 2)</code></pre>
+<h3>Operators on text and lists</h3><pre><button class="copy">Copy</button><code>print("Shakil" + "Script")
+print("ab" * 3)
+print([1, 2] + [3])
+print([0] * 4)</code></pre>
+<div class="note warning">Dividing by zero stops the program with {c('ZeroDivisionError')}. Mixing text and numbers, like {c('"age: " + 25')}, gives {c('TypeError')} — use {c('str(25)')}.</div>`},
+{title:"Compare & conditions",tag:"Functions 11\u201312",body:`
+<div class="eyebrow">Decision making</div><h2>8. Compare values and make decisions</h2>
+<p>Programs use comparisons to decide what to do. A comparison gives <code>True</code> or <code>False</code>.</p>
+<table><tr><th>Operator</th><th>Meaning</th></tr><tr><td><code>==</code></td><td>Equal</td></tr><tr><td><code>!=</code></td><td>Not equal</td></tr><tr><td><code>&gt;</code></td><td>Greater than</td></tr><tr><td><code>&lt;</code></td><td>Less than</td></tr><tr><td><code>&gt;=</code></td><td>Greater than or equal</td></tr><tr><td><code>&lt;=</code></td><td>Less than or equal</td></tr><tr><td><code>in / not in</code></td><td>Is a value inside a list or text?</td></tr><tr><td><code>is / is not</code></td><td>Same object (mostly used with None)</td></tr></table>
+<pre><button class="copy">Copy</button><code>print(10 &gt; 5, 10 == 5, "a" &lt; "b", 3 in [1, 2, 3])</code></pre>
+<h3>Combine conditions: and, or, not</h3><pre><button class="copy">Copy</button><code>age = 20
+has_id = True
+print(age &gt;= 18 and has_id)
+print(age &lt; 18 or has_id)
+print(not has_id)</code></pre>
+<h3>if / elif / else</h3><pre><button class="copy">Copy</button><code>score = 72
+if score &gt;= 90:
+    print("Grade A")
+elif score &gt;= 80:
+    print("Grade B")
+elif score &gt;= 70:
+    print("Grade C")
+else:
+    print("Grade F")</code></pre>
+<p>Only the first block whose condition is true runs. <code>elif</code> and <code>else</code> are optional.</p>
+<div class="note">Chained comparisons like {c('1 < x < 10')} are not supported. Write {c('1 < x and x < 10')} instead.</div>
+<h3>Truthiness</h3><p><code>0</code>, <code>0.0</code>, <code>""</code>, <code>[]</code> and <code>None</code> count as false; everything else is true.</p>
+<pre><button class="copy">Copy</button><code>items = []
+if not items:
+    print("the list is empty")</code></pre>`},
+{title:"Loops",tag:"Functions 13\u201315",body:`
+<div class="eyebrow">Repeating work</div><h2>9. Loops: repeat, stop and skip</h2>
+<h3>for … in range() — repeat a fixed number of times</h3><pre><button class="copy">Copy</button><code>for i in range(5):
+    print("Hello", i)</code></pre>
+<p><code>range(5)</code> gives 0, 1, 2, 3, 4. Also <code>range(2, 10)</code> and <code>range(10, 0, -3)</code> (start, stop, step).</p>
+<h3>for … in — go through a list or text</h3><pre><button class="copy">Copy</button><code>for score in [80, 65, 90]:
+    print(score)
+for letter in "abc":
+    print(letter)</code></pre>
+<h3>while — repeat while a condition is true</h3><pre><button class="copy">Copy</button><code>count = 0
+while count &lt; 3:
+    print("count is", count)
+    count += 1</code></pre>
+<h3>break — stop the loop</h3><pre><button class="copy">Copy</button><code>for i in range(10):
+    if i == 3:
+        break
+    print(i)</code></pre>
+<h3>continue — skip to the next round</h3><pre><button class="copy">Copy</button><code>for i in range(6):
+    if i % 2 == 0:
+        continue
+    print(i)</code></pre>
+<div class="note">{c('break')} and {c('continue')} can only be used inside a loop; ShakilScript reports a {c('SyntaxError')} before running if they are not.</div>
+<h3>Nested loops</h3><pre><button class="copy">Copy</button><code>for row in range(1, 4):
+    line = ""
+    for col in range(1, 4):
+        line += str(row * col) + " "
+    print(line)</code></pre>`},
+{title:"Functions",tag:"Functions 16\u201317",body:`
+<div class="eyebrow">Reusable code</div><h2>10. User-defined functions</h2><p>A function is a named block of code that can be reused. Define it with <code>def</code>, send a result back with <code>return</code>, and call it by writing its name with parentheses.</p>
+<h3>Define and call a function</h3><pre><button class="copy">Copy</button><code>def add_numbers(a, b):
+    return a + b
+
+print(add_numbers(10, 20))
+result = add_numbers(1, 2)
+print(result)</code></pre>
+<h3>Default values and keyword arguments</h3><pre><button class="copy">Copy</button><code>def greet(name, greeting="Hello"):
+    return greeting + ", " + name + "!"
+
+print(greet("Shakil"))
+print(greet("Rahim", "Welcome"))
+print(greet(greeting="Hi", name="Kim"))</code></pre>
+<h3>Functions that call themselves (recursion)</h3><pre><button class="copy">Copy</button><code>def factorial(n):
+    if n &lt;= 1:
+        return 1
+    return n * factorial(n - 1)
+
+print(factorial(5))
+print(factorial(10))</code></pre>
+<h3>Local and global variables</h3><pre><button class="copy">Copy</button><code>counter = 0
+
+def bump():
+    global counter      # use the outer variable
+    counter += 1
+
+def local_demo():
+    counter = 99        # a separate, local variable
+    return counter
+
+bump()
+bump()
+print(counter, local_demo(), counter)</code></pre>
+<p>A function without <code>return</code> gives back <code>None</code>. Recursion is limited to about 1000 nested calls, like Python (<code>RecursionError</code>).</p>
+<div class="note">A function must be defined (the {c('def')} line must have run) before it is called. A nested function cannot read the local variables of the function around it — pass them as parameters.</div>`},
+{title:"Lists",tag:"Functions 18\u201324",body:`
+<div class="eyebrow">Working with groups of values</div><h2>11. Lists</h2><p>A list stores several values together. Items are numbered from 0; negative numbers count from the end.</p>
+<pre><button class="copy">Copy</button><code>numbers = [5, 3, 1, 4, 2]
+print(numbers[0], numbers[-1], len(numbers))</code></pre>
+<table><tr><th>Function</th><th>Python-format syntax</th><th>What it does</th></tr><tr><td>sort</td><td><code>numbers.sort()   or   sorted(numbers)</code></td><td>Sort in place / get a sorted copy</td></tr><tr><td>find</td><td><code>numbers.index(4)   or   4 in numbers</code></td><td>Position of a value / is it there?</td></tr><tr><td>at</td><td><code>numbers[2]</code></td><td>Read an item by position</td></tr><tr><td>append</td><td><code>numbers.append(9)</code></td><td>Add an item at the end</td></tr><tr><td>remove</td><td><code>numbers.remove(9)   or   numbers.pop(0)</code></td><td>Remove by value / by position</td></tr><tr><td>count</td><td><code>len(numbers)</code></td><td>How many items</td></tr><tr><td>reverse</td><td><code>numbers.reverse()   or   numbers[::-1]</code></td><td>Reverse in place / get a reversed copy</td></tr></table>
+<pre><button class="copy">Copy</button><code>numbers = [5, 3, 1, 4, 2]
+numbers.append(9)
+numbers.sort()
+print(numbers)
+print("index of 4:", numbers.index(4))
+numbers.remove(9)
+print(numbers, "count:", len(numbers))
+numbers.reverse()
+print(numbers)
+last = numbers.pop()
+print(last, numbers)
+numbers.insert(1, 77)
+numbers.extend([8, 9])
+print(numbers)
+print(sorted(numbers, reverse=True))</code></pre>
+<h3>Slicing</h3><pre><button class="copy">Copy</button><code>a = [10, 20, 30, 40, 50]
+print(a[1:3], a[:2], a[3:], a[::2], a[::-1])
+a[0] = 99
+a[-1] += 1
+print(a)</code></pre>
+<h3>Lists inside lists, and copies</h3><pre><button class="copy">Copy</button><code>grid = [[1, 2], [3, 4]]
+grid[1][0] = 30
+print(grid)
+a = [1, 2]
+b = a          # same list, two names
+b.append(3)
+print(a)
+c = a[:]       # a real copy
+c.append(4)
+print(a, c)</code></pre>
+<div class="note">{c('b = a')} does not copy a list — both names point to the same list. Use {c('a[:]')} for a copy.</div>`},
+{title:"Strings",tag:"Text handling",body:`
+<div class="eyebrow">Text handling</div><h2>12. Strings</h2><p>Text can be indexed, sliced, joined and searched just like a list, but it can never be changed in place.</p>
+<pre><button class="copy">Copy</button><code>s = "Hello, ShakilScript"
+print(len(s), s[0], s[-1], s[7:], s[::-1])
+print(s.upper(), s.lower())
+print(s.find("Shakil"), s.find("xyz"), s.count("l"))
+print("  padded  ".strip() + "|")
+print("a-b-c".split("-"))
+print("-".join(["x", "y", "z"]))
+print("banana".replace("a", "o"))
+print("abc".startswith("ab"), "abc".endswith("bc"))
+print("ell" in "hello")</code></pre>
+<table><tr><th>Method</th><th>Meaning</th></tr><tr><td><code>upper() / lower()</code></td><td>Change case</td></tr><tr><td><code>strip()</code></td><td>Remove spaces at both ends</td></tr><tr><td><code>find(text)</code></td><td>Position of text, or -1</td></tr><tr><td><code>count(text)</code></td><td>How many times text appears</td></tr><tr><td><code>replace(old, new)</code></td><td>Replace every match</td></tr><tr><td><code>split(sep)</code></td><td>Cut into a list of pieces</td></tr><tr><td><code>join(list)</code></td><td>Glue a list of text with this text</td></tr><tr><td><code>startswith() / endswith()</code></td><td>Check the beginning / end</td></tr></table>
+<pre><button class="copy">Copy</button><code>def is_palindrome(text):
+    return text == text[::-1]
+
+print(is_palindrome("level"), is_palindrome("hello"))</code></pre>
+<div class="note">Strings are handled as plain ASCII bytes: {c('len()')} and indexing are reliable for English text. F-strings, triple-quoted strings and {c('%')} formatting are not supported — build text with {c('+')} and {c('str()')}.</div>`},
+{title:"Type conversion",tag:"Function 25",body:`
+<div class="eyebrow">Function 25</div><h2>13. Convert data types</h2><p>Type conversion changes a value from one type to another with the type name used as a function.</p>
+<table><tr><th>Convert to</th><th>Syntax</th><th>Example</th><th>Result</th></tr><tr><td>Integer</td><td><code>int(x)</code></td><td><code>int("25")</code></td><td><code>25</code></td></tr><tr><td>Integer</td><td><code>int(x)</code></td><td><code>int(3.99)</code></td><td><code>3</code></td></tr><tr><td>Float</td><td><code>float(x)</code></td><td><code>float("3.50")</code></td><td><code>3.5</code></td></tr><tr><td>String</td><td><code>str(x)</code></td><td><code>str(100)</code></td><td><code>"100"</code></td></tr><tr><td>String</td><td><code>str(x)</code></td><td><code>str(True)</code></td><td><code>"True"</code></td></tr><tr><td>Boolean</td><td><code>bool(x)</code></td><td><code>bool("")</code></td><td><code>False</code></td></tr><tr><td>List</td><td><code>list(x)</code></td><td><code>list("abc")</code></td><td><code>['a', 'b', 'c']</code></td></tr></table>
+<pre><button class="copy">Copy</button><code>print(int("25") + 1)
+print(float("3.50") * 2)
+print("Total: " + str(100))
+print(int(3.99), int(-3.99), bool(0), bool("hi"), list("abc"))</code></pre>
+<div class="note warning">{c('int("3.7")')} is an error (like Python) because the text is not a whole number — use {c('int(float("3.7"))')}. {c('int("abc")')} gives {c('ValueError')}. A non-empty string, even {c('"False"')}, is always {c('True')} for {c('bool()')}.</div>`},
+{title:"Errors & debugging",tag:"Fixing problems",body:`
+<div class="eyebrow">Fixing problems</div><h2>14. Understanding error messages</h2>
+<p>When something is wrong, ShakilScript stops and tells you the <b>line number</b> and the <b>kind of error</b>, using the same wording as Python:</p>
+<pre><button class="copy">Copy</button><code>items = [1, 2, 3]
+print(items[1])
+print(items[5])</code></pre>
+<p>Output:</p><pre><button class="copy">Copy</button><code>2
+ShakilScript error (line 3): IndexError: list index out of range</code></pre>
+<table><tr><th>Error</th><th>Typical cause</th><th>Fix</th></tr><tr><td>SyntaxError</td><td>Missing colon, bad indentation, unsupported feature</td><td>Check the line shown; end if/for/while/def lines with :</td></tr><tr><td>NameError</td><td>Used a variable that was never created, or a typo</td><td>Create it first with name = value</td></tr><tr><td>TypeError</td><td>Wrong kind of value, e.g. text + number</td><td>Convert with str() / int()</td></tr><tr><td>ValueError</td><td>Right type, bad content: int("abc")</td><td>Check the text before converting</td></tr><tr><td>ZeroDivisionError</td><td>Divided or used % with zero</td><td>Test the divisor first</td></tr><tr><td>IndexError</td><td>Position outside the list</td><td>Use len() and stay between 0 and len-1</td></tr><tr><td>RecursionError</td><td>A function calls itself forever</td><td>Add a stopping case</td></tr><tr><td>EOFError</td><td>input() but nothing was typed/piped</td><td>Provide input</td></tr></table>
+<h3>Check a program without running it</h3><pre><button class="copy">Copy</button><code>./shakilscript.exe --check my_program.ss</code></pre>
+<h3>Debugging checklist</h3><ul><li>Read the line number in the message first.</li><li>Print the variables just before the failing line.</li><li>Make sure every block line ends with <code>:</code> and the body is indented the same amount.</li><li>Do not mix tabs and spaces carelessly — use 4 spaces.</li></ul>`},
+{title:"ShakilScript & Python",tag:"Compatibility",body:`
+<div class="eyebrow">Know the limits</div><h2>15. What is supported, and how it differs from Python</h2>
+<p>ShakilScript is a practical <b>subset</b> of Python. A ShakilScript program is valid Python and prints the same output.</p>
+<div class="cardgrid">
+<div class="mini"><strong>Supported</strong>int, float, str, bool, None, list • if/elif/else • while, for/range • break, continue, pass • def, return, global, default and keyword arguments, recursion • and/or/not, in, is • indexing, slicing, + - * / // % ** • += -= *= and friends</div>
+<div class="mini"><strong>Built-in functions</strong>print, input, len, range, int, float, str, bool, list, sorted, abs, min, max, sum</div>
+<div class="mini"><strong>List methods</strong>append, pop, remove, insert, extend, index, count, sort, reverse</div>
+<div class="mini"><strong>String methods</strong>upper, lower, strip, find, count, replace, split, join, startswith, endswith</div></div>
+<h3>Not supported (reported as a clear error)</h3><ul>
+<li>dictionaries <code>{}</code>, tuples, sets, tuple unpacking (<code>a, b = b, a</code>), chained assignment (<code>a = b = 0</code>)</li>
+<li>f-strings, triple-quoted strings, <code>%</code> string formatting</li>
+<li><code>import</code>, <code>class</code>, <code>lambda</code>, <code>try / except</code>, <code>with</code>, <code>del</code></li>
+<li>semicolons, chained comparisons (<code>a &lt; b &lt; c</code>), conditional expressions (<code>x if c else y</code>), <code>else</code> after a loop</li></ul>
+<h3>Small differences</h3><table><tr><th>Topic</th><th>ShakilScript</th></tr><tr><td>Integers</td><td>64-bit; going beyond gives OverflowError (Python has unlimited size)</td></tr><tr><td>Strings</td><td>ASCII bytes (len and indexing of non-English text are not character-based)</td></tr><tr><td>range()</td><td>Fast inside for loops; elsewhere it creates a list</td></tr><tr><td>Nested functions</td><td>Cannot read the enclosing function’s local variables</td></tr><tr><td>Memory</td><td>No garbage collector (fine for lab-size programs)</td></tr></table>`},
+{title:"Projects & practice",tag:"Apply your learning",body:`
+<div class="eyebrow">Practice</div><h2>16. Small projects to build</h2>
+<div class="cardgrid">
+<div class="mini"><strong>1. Personal profile</strong>Store and print a name, age, department and CGPA.</div>
+<div class="mini"><strong>2. Calculator</strong>Ask for two numbers and show the sum, difference, product, quotient and remainder.</div>
+<div class="mini"><strong>3. Student result</strong>Take marks, calculate the average and print a grade with if / elif / else.</div>
+<div class="mini"><strong>4. Number collection</strong>Store values in a list, sort them, find the maximum and count the items.</div>
+<div class="mini"><strong>5. Prime checker</strong>Write a function is_prime(n) and print all primes below 50.</div>
+<div class="mini"><strong>6. Word tools</strong>Reverse a sentence, count vowels, check for palindromes.</div></div>
+<h3>Example: student result</h3><pre><button class="copy">Copy</button><code>marks = [78, 85, 92, 66]
+average = sum(marks) / len(marks)
+print("Average:", average)
+if average &gt;= 80:
+    print("Grade A")
+elif average &gt;= 70:
+    print("Grade B")
+else:
+    print("Keep practicing")</code></pre>
+<h3>Example: primes below 30</h3><pre><button class="copy">Copy</button><code>def is_prime(n):
+    if n &lt; 2:
+        return False
+    i = 2
+    while i * i &lt;= n:
+        if n % i == 0:
+            return False
+        i += 1
+    return True
+
+primes = []
+for n in range(2, 30):
+    if is_prime(n):
+        primes.append(n)
+print(primes)</code></pre>
+<h3>Practice checklist</h3><ul><li>Write the program yourself instead of only copying.</li><li>Predict the output before running it.</li><li>Test normal values and edge cases (0, negative, empty list).</li><li>Read error messages carefully.</li></ul>`},
+{title:"All 25 functions & quiz",tag:"Review",body:`
+<div class="eyebrow">Review and self-test</div><h2>17. The 25 ShakilScript functions in Python format</h2>
+<p>The original 25 function names are now written with normal Python-format syntax:</p>
+<table><tr><th>No.</th><th>Function</th><th>Purpose</th><th>ShakilScript syntax</th></tr><tr><td>1</td><td><code>print</code></td><td>Display output</td><td><code>print("Hello", 5)</code></td></tr><tr><td>2</td><td><code>input</code></td><td>Receive input</td><td><code>name = input("Name: ")</code></td></tr><tr><td>3</td><td><code>create</code></td><td>Declare variable</td><td><code>age = 20</code></td></tr><tr><td>4</td><td><code>update</code></td><td>Update variable</td><td><code>age = 24   /   age += 1</code></td></tr><tr><td>5</td><td><code>get</code></td><td>Retrieve variable</td><td><code>print(age)</code></td></tr><tr><td>6</td><td><code>add</code></td><td>Addition</td><td><code>a + b</code></td></tr><tr><td>7</td><td><code>subtract</code></td><td>Subtraction</td><td><code>a - b</code></td></tr><tr><td>8</td><td><code>multiply</code></td><td>Multiplication</td><td><code>a * b</code></td></tr><tr><td>9</td><td><code>divide</code></td><td>Division</td><td><code>a / b</code></td></tr><tr><td>10</td><td><code>modulo</code></td><td>Remainder</td><td><code>a % b</code></td></tr><tr><td>11</td><td><code>compare</code></td><td>Compare values</td><td><code>a == b   a &lt; b   a &gt;= b</code></td></tr><tr><td>12</td><td><code>when</code></td><td>Conditional execution</td><td><code>if x &gt; 0:  …  elif …:  else:</code></td></tr><tr><td>13</td><td><code>repeat</code></td><td>Repeat a block</td><td><code>for i in range(5):   /   while cond:</code></td></tr><tr><td>14</td><td><code>stop</code></td><td>Exit loop</td><td><code>break</code></td></tr><tr><td>15</td><td><code>skip</code></td><td>Skip iteration</td><td><code>continue</code></td></tr><tr><td>16</td><td><code>return</code></td><td>Return a value</td><td><code>return result</code></td></tr><tr><td>17</td><td><code>call</code></td><td>Call a user function</td><td><code>add_numbers(10, 20)</code></td></tr><tr><td>18</td><td><code>sort</code></td><td>Sort a collection</td><td><code>items.sort()   /   sorted(items)</code></td></tr><tr><td>19</td><td><code>find</code></td><td>Search a collection</td><td><code>items.index(x)   /   x in items</code></td></tr><tr><td>20</td><td><code>at</code></td><td>Access an item</td><td><code>items[2]</code></td></tr><tr><td>21</td><td><code>append</code></td><td>Add an item</td><td><code>items.append(9)</code></td></tr><tr><td>22</td><td><code>remove</code></td><td>Remove an item</td><td><code>items.remove(9)   /   items.pop(0)</code></td></tr><tr><td>23</td><td><code>count</code></td><td>Count items</td><td><code>len(items)</code></td></tr><tr><td>24</td><td><code>reverse</code></td><td>Reverse a collection</td><td><code>items.reverse()   /   items[::-1]</code></td></tr><tr><td>25</td><td><code>convert</code></td><td>Convert data type</td><td><code>int(x)  float(x)  str(x)  bool(x)</code></td></tr></table>
+<div class="note">All 25 are implemented and tested. The test suite (<code>make test</code>) runs 29 programs and compares them with real Python.</div>
+<h3>Knowledge check</h3><div class="quiz" data-answer="b"><b>1. Which line creates a variable named age with the value 20?</b><label><input type="radio" name="q1" value="a"> create(age, 20)</label><label><input type="radio" name="q1" value="b"> age = 20</label><label><input type="radio" name="q1" value="c"> var age = 20;</label><button class="primary check">Check answer</button><div class="feedback"></div></div><div class="quiz" data-answer="a"><b>2. What does 10 % 3 give?</b><label><input type="radio" name="q2" value="a"> 1</label><label><input type="radio" name="q2" value="b"> 3</label><label><input type="radio" name="q2" value="c"> 0</label><button class="primary check">Check answer</button><div class="feedback"></div></div><div class="quiz" data-answer="c"><b>3. Which symbol must end an if line?</b><label><input type="radio" name="q3" value="a"> ;</label><label><input type="radio" name="q3" value="b"> {</label><label><input type="radio" name="q3" value="c"> :</label><button class="primary check">Check answer</button><div class="feedback"></div></div><div class="quiz" data-answer="a"><b>4. Which statement leaves a loop immediately?</b><label><input type="radio" name="q4" value="a"> break</label><label><input type="radio" name="q4" value="b"> continue</label><label><input type="radio" name="q4" value="c"> return</label><button class="primary check">Check answer</button><div class="feedback"></div></div><div class="quiz" data-answer="b"><b>5. What does len([4, 8, 15]) return?</b><label><input type="radio" name="q5" value="a"> 2</label><label><input type="radio" name="q5" value="b"> 3</label><label><input type="radio" name="q5" value="c"> 15</label><button class="primary check">Check answer</button><div class="feedback"></div></div><div class="quiz" data-answer="b"><b>6. What does 7 / 2 give in ShakilScript?</b><label><input type="radio" name="q6" value="a"> 3</label><label><input type="radio" name="q6" value="b"> 3.5</label><label><input type="radio" name="q6" value="c"> 4</label><button class="primary check">Check answer</button><div class="feedback"></div></div>
+<div id="score" class="note" aria-live="polite">Answer the questions and check your score.</div>`}
+];
+
+let current=0;
+let completed=JSON.parse(localStorage.getItem("ss2-completed")||"[]");
+const nav=document.getElementById("nav"), article=document.getElementById("lesson");
+function renderNav(filter=""){nav.innerHTML="";lessons.forEach((l,i)=>{if(!(`${l.title} ${l.tag} ${l.body}`.toLowerCase().includes(filter.toLowerCase())))return;let b=document.createElement("button");b.className="nav"+(i===current?" active":"");b.textContent=(completed.includes(i)?"✓ ":"")+(i+1)+". "+l.title;b.onclick=()=>show(i);nav.appendChild(b)})}
+function updateProgress(){document.getElementById("progressBar").style.width=(completed.length/lessons.length*100)+"%";document.getElementById("progressText").textContent=completed.length+" of "+lessons.length+" lessons completed"}
+function show(i){current=Math.max(0,Math.min(lessons.length-1,i));let l=lessons[current];article.innerHTML='<p><span class="status">Tested against Python 3</span></p>'+l.body;renderNav(document.getElementById("search").value);document.getElementById("prevBtn").disabled=current===0;document.getElementById("nextBtn").disabled=current===lessons.length-1;document.getElementById("completeBtn").textContent=completed.includes(current)?"Completed ✓":"Mark lesson complete ✓";document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{navigator.clipboard.writeText(b.parentElement.querySelector("code").innerText).then(()=>{b.textContent="Copied!"}).catch(()=>{b.textContent="Select and copy"})});document.querySelectorAll(".check").forEach(b=>b.onclick=()=>{let box=b.closest(".quiz"),selected=box.querySelector("input:checked"),feedback=box.querySelector(".feedback");if(!selected){feedback.textContent="Choose an answer first.";return}let ok=selected.value===box.dataset.answer;feedback.textContent=ok?"Correct! Well done.":"Not quite. Try again.";feedback.style.color=ok?"var(--good)":"var(--warn)";let boxes=[...document.querySelectorAll(".quiz")],score=boxes.filter(x=>x.querySelector("input:checked")&&x.querySelector("input:checked").value===x.dataset.answer).length;document.getElementById("score").textContent=`Your current score: ${score} / ${boxes.length}`})}
+document.getElementById("prevBtn").onclick=()=>show(current-1);document.getElementById("nextBtn").onclick=()=>show(current+1);
+document.getElementById("completeBtn").onclick=()=>{if(!completed.includes(current))completed.push(current);else completed=completed.filter(x=>x!==current);localStorage.setItem("ss2-completed",JSON.stringify(completed));show(current);updateProgress()};
+document.getElementById("search").oninput=e=>renderNav(e.target.value);
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Reset all lesson progress?")){completed=[];localStorage.removeItem("ss2-completed");show(current);updateProgress()}};
+document.getElementById("themeBtn").onclick=()=>{let dark=document.documentElement.dataset.theme!=="dark";document.documentElement.dataset.theme=dark?"dark":"light";localStorage.setItem("ss-theme",dark?"dark":"light")};
+document.documentElement.dataset.theme=localStorage.getItem("ss-theme")||"light";
+renderNav();show(0);updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,460 @@
+# ShakilScript — Complete Beginner Programming Manual
+
+**Version:** 2.0 — Python-format syntax
+**Project:** Compiler Design Lab
+**Language implementation:** C, Flex and Bison
+
+---
+
+# 1. Introduction
+
+ShakilScript is a small programming language created as a Compiler Design Lab project.
+From version 2.0 its syntax follows the **Python format**: blocks are made with
+indentation, there are no semicolons and no curly braces.
+
+```python
+print("Hello World")
+```
+
+This is a valid ShakilScript program **and** a valid Python program. Every example in this
+manual was executed with ShakilScript and with Python 3, and the output is identical.
+
+## The 25 functions
+
+The original 25 function names are still the foundation of the language. In Python format
+each one is written with normal Python syntax:
+
+| #  | Function  | Purpose              | ShakilScript                    |
+|---:|-----------|----------------------|-------------------------------------------------|
+| 1  | print     | Display output       | `print("Hello", 5)`                             |
+| 2  | input     | Receive input        | `name = input("Name: ")`                        |
+| 3  | create    | Declare a variable   | `age = 20`                                      |
+| 4  | update    | Update a variable    | `age = 24`   or   `age += 1`                    |
+| 5  | get       | Retrieve a variable  | `print(age)`                                    |
+| 6  | add       | Addition             | `a + b`                                         |
+| 7  | subtract  | Subtraction          | `a - b`                                         |
+| 8  | multiply  | Multiplication       | `a * b`                                         |
+| 9  | divide    | Division             | `a / b`                                         |
+| 10 | modulo    | Remainder            | `a % b`                                         |
+| 11 | compare   | Compare values       | `a == b`  `a != b`  `a < b`  `a >= b`           |
+| 12 | when      | Conditional          | `if` / `elif` / `else`                          |
+| 13 | repeat    | Repeat a block       | `for i in range(5):`  or  `while cond:`         |
+| 14 | stop      | Exit a loop          | `break`                                         |
+| 15 | skip      | Skip an iteration    | `continue`                                      |
+| 16 | return    | Return a value       | `return result`                                 |
+| 17 | call      | Call a function      | `add_numbers(10, 20)`                           |
+| 18 | sort      | Sort a collection    | `items.sort()`  or  `sorted(items)`             |
+| 19 | find      | Search a collection  | `items.index(x)`  or  `x in items`              |
+| 20 | at        | Access an item       | `items[2]`                                      |
+| 21 | append    | Add an item          | `items.append(9)`                               |
+| 22 | remove    | Remove an item       | `items.remove(9)`  or  `items.pop(0)`           |
+| 23 | count     | Count items          | `len(items)`                                    |
+| 24 | reverse   | Reverse a collection | `items.reverse()`  or  `items[::-1]`            |
+| 25 | convert   | Convert a data type  | `int(x)`  `float(x)`  `str(x)`  `bool(x)`       |
+
+---
+
+# 2. Setting up ShakilScript
+
+## Requirements
+
+- GCC compiler
+- Flex
+- Bison
+- Make
+- MSYS2 UCRT64 terminal on Windows
+
+Install in MSYS2 (once):
+
+```text
+pacman -S mingw-w64-ucrt-x86_64-gcc flex bison make
+```
+
+## Build
+
+```text
+make clean
+make
+```
+
+This creates `shakilscript.exe`. On Linux or macOS the same command works.
+
+## Run
+
+```text
+./shakilscript.exe examples/01_hello.ss
+```
+
+PowerShell:
+
+```text
+.\shakilscript.exe examples\01_hello.ss
+```
+
+Check a program for syntax errors without running it:
+
+```text
+./shakilscript.exe --check my_program.ss
+```
+
+Run the test suite (29 programs compared with real Python output):
+
+```text
+make test
+```
+
+---
+
+# 3. Your first program
+
+Create `hello.ss`:
+
+```python
+print("Hello World!")
+print("Welcome to ShakilScript!")
+```
+
+## Basic syntax rules
+
+- One statement per line — no semicolons.
+- Blocks use indentation (4 spaces recommended) — no curly braces.
+- Lines that start a block (`if`, `elif`, `else`, `while`, `for`, `def`) end with a colon `:`.
+- Strings use `"double"` or `'single'` quotes.
+- Comments start with `#`.
+- Names are case-sensitive; `True`, `False` and `None` start with a capital letter.
+
+```python
+# This is a comment
+print("I am learning programming.")   # a comment after code
+if True:
+    print("inside the block")
+print("outside the block")
+```
+
+---
+
+# 4. Data types
+
+| Type    | Example          | Meaning                  |
+|---------|------------------|--------------------------|
+| int     | `24`             | Whole number (64-bit)    |
+| float   | `3.85`           | Decimal number           |
+| str     | `"Shakil"`       | Text                     |
+| bool    | `True` / `False` | True or false            |
+| None    | `None`           | "No value"               |
+| list    | `[5, 3, 1]`      | Several values in order  |
+
+```python
+age = 24
+cgpa = 3.85
+name = "Shakil"
+is_student = True
+nothing = None
+marks = [80, 65, 90]
+print(age, cgpa, name, is_student, nothing, marks)
+```
+
+Output:
+
+```text
+24 3.85 Shakil True None [80, 65, 90]
+```
+
+---
+
+# 5. Variables (functions 3–5)
+
+There is no special keyword. Assigning with `=` creates a variable the first time and
+updates it afterwards. Using a variable is just writing its name.
+
+```python
+age = 20            # create
+age = 24            # update
+age += 1            # update using the old value
+print(age)          # get
+```
+
+Shortcuts: `+=  -=  *=  /=  //=  %=  **=`.
+
+Variable names may contain letters, digits and `_` and cannot start with a digit.
+Using a name that was never created gives `NameError`.
+
+---
+
+# 6. Input and output (functions 1–2)
+
+```python
+print("Hello!")
+print("Total:", 25, True)
+print("a", "b", "c", sep="-")
+print("no new line", end="")
+print(" <- same line")
+```
+
+`input()` always returns text. Convert it when you need a number:
+
+```python
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+print("Hello,", name)
+print("Next year you will be", age + 1)
+```
+
+---
+
+# 7. Math (functions 6–10)
+
+| Operator | Meaning        | Example   | Result |
+|----------|----------------|-----------|--------|
+| `+`      | add            | `10 + 5`  | 15     |
+| `-`      | subtract       | `10 - 5`  | 5      |
+| `*`      | multiply       | `10 * 5`  | 50     |
+| `/`      | divide (float) | `10 / 4`  | 2.5    |
+| `%`      | remainder      | `10 % 3`  | 1      |
+| `//`     | floor divide   | `10 // 3` | 3      |
+| `**`     | power          | `2 ** 10` | 1024   |
+
+```python
+print(10 + 5, 10 - 5, 10 * 5, 10 / 4, 10 % 3, 10 // 3, 2 ** 10)
+print(1 + 2 * 3, (1 + 2) * 3, -2 ** 2, (-2) ** 2)
+print("ab" * 3, "x" + "y", [1, 2] + [3], [0] * 3)
+```
+
+Precedence (highest first): `**`, unary `-`, `* / // %`, `+ -`.
+Dividing by zero gives `ZeroDivisionError`. Adding text and a number gives `TypeError`
+(use `str()`).
+
+---
+
+# 8. Compare and decide (functions 11–12)
+
+| Operator          | Meaning                       |
+|-------------------|-------------------------------|
+| `==` `!=`         | equal / not equal             |
+| `<` `>` `<=` `>=` | ordering                      |
+| `in` `not in`     | membership in a list or text  |
+| `is` `is not`     | identity (mostly with `None`) |
+| `and` `or` `not`  | combine conditions            |
+
+```python
+age = 20
+has_id = True
+print(age >= 18 and has_id, age < 18 or has_id, not has_id)
+
+score = 72
+if score >= 90:
+    print("Grade A")
+elif score >= 80:
+    print("Grade B")
+elif score >= 70:
+    print("Grade C")
+else:
+    print("Grade F")
+```
+
+False values: `0`, `0.0`, `""`, `[]`, `None`. Everything else is true.
+Chained comparisons (`1 < x < 10`) are not supported; write `1 < x and x < 10`.
+
+---
+
+# 9. Loops (functions 13–15)
+
+```python
+for i in range(3):
+    print("Hello", i)
+
+for item in [80, 65, 90]:
+    print(item)
+
+count = 0
+while count < 10:
+    count += 1
+    if count % 2 == 0:
+        continue
+    if count == 7:
+        break
+    print("odd:", count)
+```
+
+`range(stop)`, `range(start, stop)` and `range(start, stop, step)` are supported.
+`break` and `continue` outside a loop are reported as a `SyntaxError` before the program runs.
+
+---
+
+# 10. Functions (functions 16–17)
+
+```python
+def add_numbers(a, b):
+    return a + b
+
+def greet(name, greeting="Hello"):
+    return greeting + ", " + name + "!"
+
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+print(add_numbers(10, 20))
+print(greet("Shakil"), greet("Rahim", "Welcome"), greet(greeting="Hi", name="Kim"))
+print(factorial(10))
+
+counter = 0
+def bump():
+    global counter
+    counter += 1
+bump()
+bump()
+print(counter)
+```
+
+- A function without `return` gives back `None`.
+- Variables created inside a function are local; use `global name` to change an outer variable.
+- Recursion depth is limited to about 1000 calls (`RecursionError`).
+- A function must be defined (its `def` line executed) before it is called.
+
+---
+
+# 11. Lists (functions 18–24)
+
+```python
+numbers = [5, 3, 1, 4, 2]
+numbers.append(9)
+numbers.sort()
+print(numbers, "index of 4:", numbers.index(4))
+numbers.remove(9)
+print(numbers, "count:", len(numbers))
+numbers.reverse()
+print(numbers, numbers[0], numbers[-1])
+print(numbers.pop(), numbers)
+numbers.insert(1, 77)
+numbers.extend([8, 9])
+print(numbers)
+print(sorted(numbers, reverse=True))
+
+a = [10, 20, 30, 40, 50]
+print(a[1:3], a[:2], a[3:], a[::2], a[::-1])
+b = a
+b.append(60)
+print(a)
+c = a[:]
+c.append(70)
+print(a, c)
+```
+
+List methods: `append`, `pop`, `remove`, `insert`, `extend`, `index`, `count`, `sort`, `reverse`.
+`b = a` does not copy a list; use `a[:]` for a copy.
+
+---
+
+# 12. Strings
+
+```python
+s = "Hello, ShakilScript"
+print(len(s), s[0], s[-1], s[7:], s[::-1])
+print(s.upper(), s.lower(), s.find("Shakil"), s.count("l"))
+print("  padded  ".strip() + "|", "a-b-c".split("-"), "-".join(["x", "y"]))
+print("banana".replace("a", "o"), "abc".startswith("ab"), "ell" in "hello")
+```
+
+String methods: `upper`, `lower`, `strip`, `find`, `count`, `replace`, `split`, `join`,
+`startswith`, `endswith`. Strings cannot be changed in place.
+
+---
+
+# 13. Type conversion (function 25)
+
+```python
+print(int("25") + 1, int(3.99), float("3.50"), str(100) + "!", bool(0), bool("hi"), list("abc"))
+```
+
+`int("3.7")` is an error (as in Python) because the text is not a whole number; use
+`int(float("3.7"))`. `int("abc")` gives `ValueError`.
+
+---
+
+# 14. Errors
+
+Errors stop the program and name the line and the kind of error, using Python's wording:
+
+```text
+ShakilScript error (line 3): IndexError: list index out of range
+```
+
+| Error             | Typical cause                                         |
+|-------------------|-------------------------------------------------------|
+| SyntaxError       | missing colon, bad indentation, unsupported feature   |
+| NameError         | variable used before it was created, or a typo        |
+| TypeError         | wrong kind of value (text + number)                   |
+| ValueError        | `int("abc")`                                          |
+| ZeroDivisionError | dividing or using `%` with zero                       |
+| IndexError        | list position outside `0 .. len-1`                    |
+| RecursionError    | a function calls itself forever                       |
+| EOFError          | `input()` with nothing to read                        |
+| OverflowError     | integer larger than 64 bits                           |
+
+Syntax errors are found before anything is executed, so a program with a syntax error prints nothing.
+
+---
+
+# 15. Supported subset of Python
+
+**Supported:** int, float, str, bool, None, list; `if/elif/else`; `while`; `for` with `range`,
+lists and strings; `break`, `continue`, `pass`; `def`, `return`, `global`, default and keyword
+arguments, recursion; `and or not`, `in`, `is`; indexing, slicing; all arithmetic operators and
+the augmented assignments; trailing commas; `\` line continuation and multi-line brackets.
+
+**Built-in functions:** `print input len range int float str bool list sorted abs min max sum`
+
+**Not supported (reported with a clear message):** dictionaries, tuples, sets, tuple unpacking,
+chained assignment (`a = b = 0`), f-strings, triple-quoted strings, `%` string formatting,
+`import`, `class`, `lambda`, `try/except`, `with`, `del`, semicolons, chained comparisons,
+conditional expressions (`x if c else y`), `else` after a loop.
+
+**Differences from Python:** integers are 64-bit (overflow is an error), strings are ASCII
+bytes, nested functions cannot read the enclosing function's local variables, `range()` makes a
+list outside `for` loops, and there is no garbage collector.
+
+---
+
+# 16. Migrating from version 1.2 (function-call syntax)
+
+| Version 1.2                                 | Version 2.0 (Python format)           |
+|---------------------------------------------|---------------------------------------|
+| `print("Hi");`                              | `print("Hi")`                         |
+| `create("age", 20);`                        | `age = 20`                            |
+| `update("age", 24);`                        | `age = 24`                            |
+| `print(get("age"));`                        | `print(age)`                          |
+| `add(a, b)` `subtract(a, b)`                | `a + b`   `a - b`                     |
+| `multiply(a, b)` `divide(a, b)`             | `a * b`   `a / b`                     |
+| `modulo(a, b)`                              | `a % b`                               |
+| `compare(a, ">", b)`                        | `a > b`                               |
+| `when(cond) { ... }`                        | `if cond:` + indented block           |
+| `repeat(5) { ... }`                         | `for i in range(5):`                  |
+| `stop();` `skip();`                         | `break`   `continue`                  |
+| `function f(a) { return(get("a")); }`       | `def f(a):` + `return a`              |
+| `call("f", 1)`                              | `f(1)`                                |
+| `sort(list)` `reverse(list)`                | `list.sort()`   `list.reverse()`      |
+| `find(list, x)` `at(list, i)`               | `list.index(x)`   `list[i]`           |
+| `append(list, x)` `remove(list, i)`         | `list.append(x)`   `list.pop(i)`      |
+| `count(list)`                               | `len(list)`                           |
+| `convert(x, "int")`                         | `int(x)`                              |
+| `// comment`                                | `# comment`                           |
+
+---
+
+# 17. How the compiler works
+
+| Phase               | File               | What it does                                                        |
+|---------------------|--------------------|---------------------------------------------------------------------|
+| Lexical analysis    | `src/lexer.l`      | Flex scanner; turns indentation into INDENT / DEDENT tokens         |
+| Syntax analysis     | `src/parser.y`     | Bison LALR(1) grammar with Python operator precedence; builds an AST|
+| Semantic analysis   | `src/runtime.c`    | Checks `break`/`continue`/`return` placement before running         |
+| Execution           | `src/runtime.c`    | Tree-walking interpreter: scopes, calls, lists, strings, errors     |
+
+The whole program is parsed and checked first, so syntax errors are reported before any output.
+
+## Testing
+
+`tests/` contains 9 feature programs and 20 error programs. Their expected output was generated
+by running the same files with real Python 3, so `make test` proves ShakilScript matches Python.

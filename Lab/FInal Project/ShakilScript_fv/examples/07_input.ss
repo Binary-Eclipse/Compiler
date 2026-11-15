@@ -1,0 +1,7 @@
+# 07 - Input and conversion (input() always returns text)
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+print("Hello,", name)
+print("Next year you will be", age + 1)
+height = float(input("Enter your height in meters: "))
+print("Height in cm:", height * 100)
