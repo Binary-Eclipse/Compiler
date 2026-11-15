@@ -1,74 +1,41 @@
-# ShakilScript 2.0 
+# Compiler
 
-ShakilScript is a small educational programming language interpreter written in C with Flex and Bison.
-Version 2.0 changes the syntax to the **Python format**: indentation-based blocks, no semicolons,
-no curly braces. A ShakilScript program is also a valid Python program and prints the same output.
+<p align="center">
+  <img src="https://img.shields.io/badge/UITS-CSE-blue?style=flat-square">&nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/Batch-55-green?style=flat-square">&nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/Academic-Course-orange?style=flat-square">
+</p>
 
-```
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)
+## Course Information
 
-for i in range(1, 6):
-    print(i, "! =", factorial(i))
-```
+| Field           | Details                        |
+| --------------- | ------------------------------ |
+| **Course Code** | CSE XXXX                       |
+| **Credit**      | 3.0                            |
+| **Program**     | Computer Science & Engineering |
+| **University**  | UITS                           |
+| **Batch**       | 55                             |
 
-## The 25 functions
+## Repository Contents
 
-| #  | Function | ShakilScript syntax                     | #  | Function | ShakilScript syntax                    |
-|---:|----------|-----------------------------------------|---:|----------|----------------------------------------|
-| 1  | print    | `print("Hi", x)`                        | 14 | stop     | `break`                                |
-| 2  | input    | `name = input("Name: ")`                | 15 | skip     | `continue`                             |
-| 3  | create   | `age = 20`                              | 16 | return   | `return value`                         |
-| 4  | update   | `age = 24` / `age += 1`                 | 17 | call     | `add_numbers(10, 20)`                  |
-| 5  | get      | `print(age)`                            | 18 | sort     | `items.sort()` / `sorted(items)`       |
-| 6  | add      | `a + b`                                 | 19 | find     | `items.index(x)` / `x in items`        |
-| 7  | subtract | `a - b`                                 | 20 | at       | `items[2]`                             |
-| 8  | multiply | `a * b`                                 | 21 | append   | `items.append(9)`                      |
-| 9  | divide   | `a / b`                                 | 22 | remove   | `items.remove(9)` / `items.pop(0)`     |
-| 10 | modulo   | `a % b`                                 | 23 | count    | `len(items)`                           |
-| 11 | compare  | `a == b`, `a < b`, `a >= b` ...         | 24 | reverse  | `items.reverse()` / `items[::-1]`      |
-| 12 | when     | `if` / `elif` / `else`                  | 25 | convert  | `int(x)` `float(x)` `str(x)` `bool(x)` |
-| 13 | repeat   | `for i in range(n):` / `while cond:`    |    |          |                                        |
+| Section                         | Description                               |
+| ------------------------------- | ----------------------------------------- |
+| 📖 [Notes](./Notes)             | Lecture notes and study materials         |
+| ❓ [Questions](./Questions)      | CT, Midterm, Final and practice questions |
+| 💻 [Labs](./Labs)               | Laboratory tasks and implementations      |
+| 📝 [Assignments](./Assignments) | Course assignments                        |
+| 📚 [Books](./Books)             | Recommended books and references          |
+| 🔗 [Resources](./Resources)     | Online courses, videos and useful links   |
+| 🔬 [Research](./Research)       | Research papers and related materials     |
+| 🛠️ [Projects](./Projects)      | Course-related projects                   |
 
-## Build and run
+## Course Objective
 
-Windows (MSYS2 UCRT64): `pacman -S mingw-w64-ucrt-x86_64-gcc flex bison make`, then:
+To develop a strong understanding of the **theoretical concepts, practical applications, and problem-solving techniques** covered in this course.
 
-```text
-make clean
-make
-./shakilscript.exe examples/01_hello.ss
-./shakilscript.exe --check examples/01_hello.ss     # syntax check only
-make test                                            # run the 29-program test suite
-```
 
-`build_windows.bat` runs `make` for you. A prebuilt 64-bit `shakilscript.exe` is included.
+---
 
-## What is supported
+**Academic Journey — UITS CSE Batch 55**
 
-- Types: int (64-bit), float, str, bool, None, list
-- `if / elif / else`, `while`, `for` (range, list, string), `break`, `continue`, `pass`
-- `def`, `return`, `global`, default and keyword arguments, recursion (about 1000 deep)
-- Operators: `+ - * / // % **`, comparisons, `and or not`, `in`, `is`, indexing, slicing, `+= -= ...`
-- Built-ins: `print input len range int float str bool list sorted abs min max sum`
-- List methods: `append pop remove insert extend index count sort reverse`
-- String methods: `upper lower strip find count replace split join startswith endswith`
-- Python-style error messages with the line number, e.g. `ShakilScript error (line 3): IndexError: list index out of range`
-
-Not supported (clear error message): dict/tuple/set, f-strings, `import`, `class`, `lambda`, `try/except`,
-semicolons, chained comparisons, conditional expressions. See `manual.txt` section 15.
-
-## Project layout
-
-| Path | Purpose |
-|---|---|
-| `src/lexer.l` | Flex scanner with INDENT / DEDENT generation |
-| `src/parser.y` | Bison grammar (Python precedence) and AST building |
-| `src/runtime.c`, `src/runtime.h` | Semantic check and tree-walking interpreter |
-| `main.c`, `Makefile`, `build_windows.bat` | Driver and build files |
-| `examples/` | Eight example programs (`.in` files supply input) |
-| `tests/` | 9 feature tests + 20 error tests; expected output generated by real Python 3 |
-| `guideline manual/` | Interactive HTML beginner guidebook |
-| `manual.txt` | Full manual, including a 1.2 → 2.0 migration table |
+**Author:** Binary-Eclispe
