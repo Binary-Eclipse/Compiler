@@ -14,7 +14,7 @@ for i in range(1, 6):
     print(i, "! =", factorial(i))
 ```
 
-## The 25 functions in Python format
+## The 25 functions
 
 | #  | Function | ShakilScript syntax                     | #  | Function | ShakilScript syntax                    |
 |---:|----------|-----------------------------------------|---:|----------|----------------------------------------|
