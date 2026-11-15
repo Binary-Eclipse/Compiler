@@ -1,0 +1,7 @@
+# 07 - Input and conversion (input() always returns text)
+name = ask("Enter your name: ")
+age = whole(ask("Enter your age: "))
+show("Hello,", name)
+show("Next year you will be", age + 1)
+height = decimal(ask("Enter your height in meters: "))
+show("Height in cm:", height * 100)

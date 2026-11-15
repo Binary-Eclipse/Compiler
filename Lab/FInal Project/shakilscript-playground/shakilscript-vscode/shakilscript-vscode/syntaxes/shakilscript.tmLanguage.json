@@ -1,0 +1,22 @@
+{
+  "scopeName": "source.shakilscript",
+  "name": "ShakilScript",
+  "patterns": [
+    { "name": "comment.line.number-sign.shakilscript", "match": "#.*$" },
+    { "name": "string.quoted.double.shakilscript", "begin": "\"", "end": "\"|$",
+      "patterns": [{ "name": "constant.character.escape.shakilscript", "match": "\\\\." }] },
+    { "name": "string.quoted.single.shakilscript", "begin": "'", "end": "'|$",
+      "patterns": [{ "name": "constant.character.escape.shakilscript", "match": "\\\\." }] },
+    { "match": "\\b(task)\\s+([A-Za-z_]\\w*)",
+      "captures": { "1": { "name": "keyword.control.shakilscript" }, "2": { "name": "entity.name.function.shakilscript" } } },
+    { "name": "keyword.control.shakilscript", "match": "\\b(when|orwhen|otherwise|each|during|within|stop|skip|give|task|pass|global)\\b" },
+    { "name": "keyword.operator.word.shakilscript", "match": "\\b(and|or|not|is)\\b" },
+    { "name": "constant.language.shakilscript", "match": "\\b(True|False|None)\\b" },
+    { "name": "support.function.builtin.shakilscript",
+      "match": "\\b(show|ask|span|size|whole|decimal|text|truth|list|arranged|abs|min|max|sum)\\b" },
+    { "name": "support.function.method.shakilscript",
+      "match": "(?<=\\.)(push|erase|pull|arrange|flip|locate|seek|tally|insert|extend|upper|lower|strip|replace|split|join|startswith|endswith)\\b" },
+    { "name": "constant.numeric.shakilscript", "match": "\\b\\d+(\\.\\d+)?([eE][+-]?\\d+)?\\b" },
+    { "name": "keyword.operator.shakilscript", "match": "//=|\\*\\*=|[+\\-*/%]=|==|!=|<=|>=|//|\\*\\*|[+\\-*/%<>=]" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "shakilscript",
+  "displayName": "ShakilScript",
+  "description": "Syntax highlighting for the ShakilScript language (.ss)",
+  "version": "1.0.0",
+  "publisher": "shakil",
+  "engines": { "vscode": "^1.60.0" },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [{
+      "id": "shakilscript",
+      "aliases": ["ShakilScript", "shakilscript"],
+      "extensions": [".ss"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "shakilscript",
+      "scopeName": "source.shakilscript",
+      "path": "./syntaxes/shakilscript.tmLanguage.json"
+    }]
+  }
+}

@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: shakilscript-playground
+    runtime: docker
+    plan: free
