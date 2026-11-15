@@ -1,10 +1,10 @@
-# ShakilScript 2.0 — Python-format syntax
+# ShakilScript 2.0 
 
 ShakilScript is a small educational programming language interpreter written in C with Flex and Bison.
 Version 2.0 changes the syntax to the **Python format**: indentation-based blocks, no semicolons,
 no curly braces. A ShakilScript program is also a valid Python program and prints the same output.
 
-```python
+```
 def factorial(n):
     if n <= 1:
         return 1
